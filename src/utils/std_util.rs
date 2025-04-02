@@ -1,7 +1,7 @@
 use std::io::{self, Write};
 
 pub fn read_input(prompt: &str) -> String {
-    print!("{} ", prompt);
+    print!("{}", prompt);
     io::stdout().flush().unwrap();
 
     let mut input = String::new();
