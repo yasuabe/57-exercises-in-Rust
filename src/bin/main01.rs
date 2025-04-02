@@ -1,12 +1,20 @@
 use std::io::{self, Write};
 
-fn main() {
+fn read_name() -> String {
     print!("What is your name? ");
     io::stdout().flush().unwrap();
 
     let mut name = String::new();
     io::stdin().read_line(&mut name).expect("Failed to read line");
 
-    let greeting = format!("Helo {}, nice to meet you!", name.trim());
+    name.trim().to_string()
+}
+fn make_greeting(name: String) -> String {
+    format!("Helo {}, nice to meet you!", name)
+}
+fn main() {
+    let name = read_name();
+    let greeting = make_greeting(name);
+
     println!("{}", greeting)
 }
