@@ -19,3 +19,12 @@ pub fn read_number(prompt: &str) -> i32 {
         println!("Please enter a valid number.");
     }
 }
+pub fn read_float(prompt: &str) -> f32 {
+    loop {
+        let input = read_input(prompt);
+        if let Ok(n) = input.trim().parse::<f32>() {
+            return n;
+        }
+        println!("Please enter a valid floating-point number.");
+    }
+}
