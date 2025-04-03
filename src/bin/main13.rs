@@ -1,5 +1,5 @@
 
-use exercises_for_programmer::utils::std_util::{read_number, read_float};
+use exercises_for_programmer::utils::std_util::{read_int, read_float};
 
 struct Input { principal: i32, rate: f32, years: i32, times: i32 }
 
@@ -12,10 +12,10 @@ impl Input {
 }
 fn read() -> Input {
     Input {
-        principal: read_number("What is the principal amount? "),
+        principal: read_int("What is the principal amount? "),
         rate:      read_float( "What is the rate? "),
-        years:     read_number("What is the number of years? "),
-        times:     read_number("What is the number of times the interes is compounded per year? ")
+        years:     read_int("What is the number of years? "),
+        times:     read_int("What is the number of times the interes is compounded per year? ")
     }
 }
 fn print_output(result: Input) {

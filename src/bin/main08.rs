@@ -1,13 +1,13 @@
-use exercises_for_programmer::utils::std_util::read_number;
+use exercises_for_programmer::utils::std_util::read_int;
 
 struct Input { people: i32, pizzas: i32, slices: i32 }
 struct Result { people: i32, pizzas: i32, slices: i32, leftover: i32 }
 
 fn read() -> Input {
     Input {
-        people: read_number("How many people? "),
-        pizzas: read_number("How many pizzas do you have? "),
-        slices: read_number("How many slices per pizza? ")
+        people: read_int("How many people? "),
+        pizzas: read_int("How many pizzas do you have? "),
+        slices: read_int("How many slices per pizza? ")
     }
 }
 fn calc(input: Input) -> Result {
