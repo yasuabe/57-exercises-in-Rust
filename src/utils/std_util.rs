@@ -9,3 +9,13 @@ pub fn read_input(prompt: &str) -> String {
 
     input.trim().to_string()
 }
+
+pub fn read_number(prompt: &str) -> i32 {
+    loop {
+        let input = read_input(prompt);
+        if let Ok(n) = input.trim().parse::<i32>() {
+            return n;
+        }
+        println!("Please enter a valid number.");
+    }
+}
