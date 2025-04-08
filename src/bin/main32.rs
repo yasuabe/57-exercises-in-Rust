@@ -1,5 +1,6 @@
 /*
-- Game: Guess the Number with 3 difficulty levels:
+# Ex32 Guess the Number Game
+- Guess the Number with 3 difficulty levels:
   -  Level 1: 1–10
   -  Level 2: 1–100
   -  Level 3: 1–1000
@@ -12,43 +13,41 @@
 */
 use exercises_for_programmer::utils::std_util::{read_int, read_input};
 
-fn read_guess(prompt: &str) -> Result<i32, std::num::ParseIntError> {
-    read_input(prompt).trim().parse::<i32>()
+fn read_guess(prompt: &str) -> Result<u32, std::num::ParseIntError> {
+    read_input(prompt).trim().parse::<u32>()
 }
-fn do_play(difficulty: i32) {
+fn generate_random_number(difficulty: i32) -> u32 {
     let max_number = match difficulty {
         1 => 10,
         2 => 100,
         3 => 1000,
-        _ => {
-            println!("Invalid difficulty level.");
-            return;
-        }
+        _ => panic!("Invalid difficulty level."),
     };
+    rand::random::<u32>() % max_number as u32 + 1
+}
+fn read_and_compare_guess(prompt: String, secret: u32) -> Result<(), &'static str> {
+    let guess = read_guess(&prompt);
+    match guess {
+        Ok(g) if g < secret => Err("Too low. "),
+        Ok(g) if g > secret => Err("Too high. "),
+        Err(_)              => Err("Please enter a number. "),
+        Ok(_)               => Ok(()), 
+    }
+}
+fn do_play(difficulty: i32) {
+    let secret_number = generate_random_number(difficulty);
 
-    let secret_number = rand::random::<u32>() % max_number + 1;
     let mut guess_count = 0;
 
-    let mut guess = read_guess("I have my number. What's your guess? ");
+    print!("I have my number. What's your guess? ");
     loop {
         guess_count += 1;
-        match guess {
-            Ok(g) => {
-                if (g as i64) < (secret_number as i64) {
-                    print!("Too low. ");
-                } else if (g as i64) > (secret_number as i64) {
-                    print!("Too high. ");
-                } else {
-                    println!("You got in {} guesses!", guess_count);
-                    break;
-                }
-            }
-            Err(_) => {
-                print!("Please enter a number. ");
-            }
-        }
-        guess = read_guess("Guess again: ");
-    }
+        match read_and_compare_guess("".to_string(), secret_number) {
+            Err(msg) => print!("{} Guess again: ", msg),
+            Ok(_)    => break, 
+        };
+    };
+    println!("You got in {} guesses!", guess_count);
 }
 fn main() {
     println!("Let's play Guess the Number.");
