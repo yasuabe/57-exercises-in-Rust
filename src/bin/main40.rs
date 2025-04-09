@@ -5,6 +5,7 @@
 - Display matching records in a formatted table.
 - Data should be stored in an array of maps (or equivalent structure).
 */
+use std::fmt;
 use once_cell::sync::Lazy;
 use exercises_for_programmer::utils::std_util::read_input;
 
@@ -14,7 +15,6 @@ struct Employee {
     position:        String,
     separation_date: Option<String>,
 }
-
 impl Employee {
     fn new(first_name: &str, last_name: &str, position: &str, separation_date: Option<&str>) -> Self {
         Employee {
@@ -23,6 +23,15 @@ impl Employee {
             position:        position.to_string(),
             separation_date: separation_date.map(|date| date.to_string()),
         }
+    }
+}
+impl fmt::Display for Employee {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:<10} {:<10} {:<20} {}",
+            self.first_name,
+            self.last_name,
+            self.position,
+            self.separation_date.as_deref().unwrap_or("N/A"))
     }
 }
 static EMPLOYEES: Lazy<Vec<Employee>> = Lazy::new(|| {
@@ -39,15 +48,8 @@ static EMPLOYEES: Lazy<Vec<Employee>> = Lazy::new(|| {
 
 fn main() {
     let query = read_input("Enter a search string: ");
-    let predicate = |e: &&Employee| {
-        e.first_name.contains(&query) || e.last_name.contains(&query)
-    };
-    let print_employee = |e: &Employee| {
-        println!("{:<10} {:<10} {:<20} {}",
-        e.first_name,
-        e.last_name,
-        e.position,
-        e.separation_date.as_deref().unwrap_or("N/A"));
-    };
-    EMPLOYEES.iter().filter(predicate).for_each(print_employee);
+    EMPLOYEES
+      .iter()
+      .filter(|e| e.first_name.contains(&query) || e.last_name.contains(&query))
+      .for_each(|e| println!("{}", e));
 }
