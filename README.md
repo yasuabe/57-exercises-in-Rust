@@ -28,6 +28,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex33. [Magic 8 Ball](src/bin/main33.rs)
 - Ex40. [Filtering Records](src/bin/main40.rs)
 #### Chapter 8:
+- Ex41. [Name Sorter](src/bin/main41.rs)
 #### Chapter 9:
 #### Chapter 10:
 
