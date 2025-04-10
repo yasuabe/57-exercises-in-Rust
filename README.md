@@ -31,6 +31,8 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex41. [Name Sorter](src/bin/main41.rs)
 - Ex46. [Word Frequency Finder](src/bin/main46.rs)
 #### Chapter 9:
+- Ex47. [Who’s in Space?](src/bin/main47.rs)
+
 #### Chapter 10:
 
 ## Technologies Used
