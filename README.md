@@ -1,7 +1,7 @@
 # *Exercises for Programmer* in Rust
 
 ## Overview
-A personal project to get started with Rust by solving the exercises from the book Exercises for Programmers in Rust.
+A personal project to get started with Rust by solving the exercises from the book *Exercises for Programmers* in Rust.
 
 ### Solved Exercises
 #### Chapter 2: Input, Processing, and Output
@@ -32,13 +32,20 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex46. [Word Frequency Finder](src/bin/main46.rs)
 #### Chapter 9:
 - Ex47. [Who’s in Space?](src/bin/main47.rs)
-
+- Ex52. [Creating Your Own Time Service](src/bin/main52.rs)
 #### Chapter 10:
 
 ## Technologies Used
 
 - rust 1.85.1, cargo 1.85.1
-- [libraries](Cargo.toml): [chrono](https://docs.rs/chrono/latest/chrono/), [once_cell](https://docs.rs/once_cell/latest/once_cell/), [regex](https://docs.rs/regex/latest/regex/)
+- [libraries](Cargo.toml): [chrono](https://docs.rs/chrono/latest/chrono/), [once_cell](https://docs.rs/once_cell/latest/once_cell/), [regex](https://docs.rs/regex/latest/regex/),
+ [rand](https://rand/docs.rs/latest/rand/),
+ [itertools](https://docs.rs/itertools/latest/itertools/),
+ [reqwest](https://docs.rs/reqwest/latest/reqwest/),
+ [tokio](https://docs.rs/tokio/latest/tokio/), 
+ [serde](https://docs.rs/serde/latest/serde/), 
+ [serde_json](https://docs.rs/serde_json/latest/serde_json/), 
+ [actix-web](https://docs.rs/actix-web/latest/actix-web/),
 
 ## How to Run
 Run the following directly under the project.
