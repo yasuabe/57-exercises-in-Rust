@@ -22,8 +22,8 @@ fn calc(input: Input) -> Result {
 fn print_output(result: Result) {
     println!(
 r#"{} people with {} pizzas
-​Each person gets {} pieces of pizza.
-​There are {} leftover pieces."#,
+Each person gets {} pieces of pizza.
+There are {} leftover pieces."#,
         result.people,
         result.pizzas,
         result.slices,
