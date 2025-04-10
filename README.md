@@ -29,6 +29,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex40. [Filtering Records](src/bin/main40.rs)
 #### Chapter 8:
 - Ex41. [Name Sorter](src/bin/main41.rs)
+- Ex46. [Word Frequency Finder](src/bin/main46.rs)
 #### Chapter 9:
 #### Chapter 10:
 
