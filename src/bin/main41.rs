@@ -14,7 +14,7 @@ use std::io::{BufWriter, Write};
 use std::error::Error;
 
 static INPUT_PATH:  &str = "data/names.txt";
-static OUTPUT_PATH: &str = "data/sorted_names.txt";
+static OUTPUT_PATH: &str = "output/sorted_names.txt";
 
 fn read_names(path: &str) -> Result<Vec<String>, Box<dyn Error>> {
     Ok(fs::read_to_string(path)?
