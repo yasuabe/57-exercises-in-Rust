@@ -34,6 +34,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex47. [Who’s in Space?](src/bin/main47.rs)
 - Ex52. [Creating Your Own Time Service](src/bin/main52.rs)
 #### Chapter 10:
+- Ex53. [Todo List](src/bin/main53.rs)
 
 ## Technologies Used
 
@@ -52,9 +53,18 @@ Run the following directly under the project.
 ```
 $ cargo run --bin main[nn]
 ```
+### Ex52: Creating Your Own Time Service
+1. Run cargo run --bin main52.
+2. From another terminal, run cargo run --bin main52_client.
+
+### Ex53: Todo List
+Start Redis in your local environment with the command below, then run cargo run --bin main53:
+```
+$ docker run --name redis-local -d -p 6379:6379 redis
+```
 
 ## Notes
-- I relied on Vibe Coding just a little bit."
+- I relied on Vibe Coding just a little bit.
 
 ## References
 - [Exercises for Programmers](https://www.oreilly.com/library/view/exercises-for-programmers/9781680501513/)
