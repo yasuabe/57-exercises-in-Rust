@@ -35,6 +35,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex52. [Creating Your Own Time Service](src/bin/main52.rs)
 #### Chapter 10:
 - Ex53. [Todo List](src/bin/main53.rs)
+- Ex57. [Trivia App](src/bin/main57.rs)
 
 ## Technologies Used
 
