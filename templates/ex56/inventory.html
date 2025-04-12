@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ex 56: Tracking Inventory</title>
+  <style>
+    section { 
+        width: 500px;
+    }
+    table {
+        border: 1px #555 solid;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    table * {
+        border: 1px #555 solid;
+        box-sizing: border-box;
+    }
+    th, td {
+        padding: 5px;
+        text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>Ex 56: Tracking Inventory</h1>
+  <section>
+    <form method="post" action="/ex56">
+      <table>
+        <thead>
+            <tr>
+              <th>Name</th>
+              <th>Serial Number</th>
+              <th>Value</th></tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.serial_no }}</td>
+            <td>{{ item.value }}</td>
+          </tr>
+          {% endfor %}
+          <tr>
+            <td><input type="text" name="name"      required></td>
+            <td><input type="text" name="serial_no" required></td>
+            <td><input type="number" name="value"  step="0.01" required></td>
+          </tr>
+        </tbody>
+      </table>
+      <button type="submit">Add</button>
+    </form>
+  </section>
+  <footer>
+    <a href="ex56/csv" target="_blank">CSV</a>
+  </footer>
+</body>
+</html>
