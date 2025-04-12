@@ -35,19 +35,13 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex52. [Creating Your Own Time Service](src/bin/main52.rs)
 #### Chapter 10:
 - Ex53. [Todo List](src/bin/main53.rs)
+- Ex56. [Tracking Inventory](src/bin/main56.rs)
 - Ex57. [Trivia App](src/bin/main57.rs)
 
 ## Technologies Used
 
 - rust 1.85.1, cargo 1.85.1
-- [libraries](Cargo.toml): [chrono](https://docs.rs/chrono/latest/chrono/), [once_cell](https://docs.rs/once_cell/latest/once_cell/), [regex](https://docs.rs/regex/latest/regex/),
- [rand](https://rand/docs.rs/latest/rand/),
- [itertools](https://docs.rs/itertools/latest/itertools/),
- [reqwest](https://docs.rs/reqwest/latest/reqwest/),
- [tokio](https://docs.rs/tokio/latest/tokio/), 
- [serde](https://docs.rs/serde/latest/serde/), 
- [serde_json](https://docs.rs/serde_json/latest/serde_json/), 
- [actix-web](https://docs.rs/actix-web/latest/actix-web/),
+- [libraries](Cargo.toml): [chrono](https://docs.rs/chrono/latest/chrono/), [once_cell](https://docs.rs/once_cell/latest/once_cell/), [regex](https://docs.rs/regex/latest/regex/), [rand](https://rand/docs.rs/latest/rand/), [itertools](https://docs.rs/itertools/latest/itertools/), [reqwest](https://docs.rs/reqwest/latest/reqwest/), [tokio](https://docs.rs/tokio/latest/tokio/), [serde](https://docs.rs/serde/latest/serde/), [serde_json](https://docs.rs/serde_json/latest/serde_json/), [actix-web](https://docs.rs/actix-web/latest/actix-web/), [redis](https://docs.rs/redis/latest/redis/), [tera]https://docs.rs/tera/latest/tera/
 
 ## How to Run
 Run the following directly under the project.
@@ -55,7 +49,7 @@ Run the following directly under the project.
 $ cargo run --bin main[nn]
 ```
 ### Ex52: Creating Your Own Time Service
-1. Run cargo run --bin main52.
+1. Run `cargo run --bin main52`.
 2. From another terminal, run cargo run --bin main52_client.
 
 ### Ex53: Todo List
@@ -63,6 +57,11 @@ Start Redis in your local environment with the command below, then run cargo run
 ```
 $ docker run --name redis-local -d -p 6379:6379 redis
 ```
+### Ex56: Tracking Inventory
+1. Run `cargo run --bin main56`.
+2. Open `http://127.0.0.1:8080/ex56` in your browser.
+3. Add inventory items.
+4. The `data/ex56_inventory.json` file will update with each addition.
 
 ## Notes
 - I relied on Vibe Coding just a little bit.
