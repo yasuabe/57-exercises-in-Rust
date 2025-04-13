@@ -35,6 +35,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex52. [Creating Your Own Time Service](src/bin/main52.rs)
 #### Chapter 10:
 - Ex53. [Todo List](src/bin/main53.rs)
+- Ex54. [URL Shortener](src/bin/main54.rs)
 - Ex55. [Text Sharing](src/bin/main55.rs)
 - Ex56. [Tracking Inventory](src/bin/main56.rs)
 - Ex57. [Trivia App](src/bin/main57.rs)
@@ -42,7 +43,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 ## Technologies Used
 
 - rust 1.85.1, cargo 1.85.1
-- [libraries](Cargo.toml): [chrono](https://docs.rs/chrono/latest/chrono/), [once_cell](https://docs.rs/once_cell/latest/once_cell/), [regex](https://docs.rs/regex/latest/regex/), [rand](https://rand/docs.rs/latest/rand/), [itertools](https://docs.rs/itertools/latest/itertools/), [reqwest](https://docs.rs/reqwest/latest/reqwest/), [tokio](https://docs.rs/tokio/latest/tokio/), [serde](https://docs.rs/serde/latest/serde/), [serde_json](https://docs.rs/serde_json/latest/serde_json/), [actix-web](https://docs.rs/actix-web/latest/actix-web/), [redis](https://docs.rs/redis/latest/redis/), [tera](https://docs.rs/tera/latest/tera/), [mongodb](https://docs.rs/mongodb/latest/mongodb), [md-5](https://docs.rs/md-5/latest/md-5), [uuid](https://docs.rs/uuid/latest/uuid),
+- [libraries](Cargo.toml): [chrono](https://docs.rs/chrono/latest/chrono/), [once_cell](https://docs.rs/once_cell/latest/once_cell/), [regex](https://docs.rs/regex/latest/regex/), [rand](https://rand/docs.rs/latest/rand/), [itertools](https://docs.rs/itertools/latest/itertools/), [reqwest](https://docs.rs/reqwest/latest/reqwest/), [tokio](https://docs.rs/tokio/latest/tokio/), [serde](https://docs.rs/serde/latest/serde/), [serde_json](https://docs.rs/serde_json/latest/serde_json/), [actix-web](https://docs.rs/actix-web/latest/actix-web/), [redis](https://docs.rs/redis/latest/redis/), [tera](https://docs.rs/tera/latest/tera/), [mongodb](https://docs.rs/mongodb/latest/mongodb), [md-5](https://docs.rs/md-5/latest/md-5), [uuid](https://docs.rs/uuid/latest/uuid), [url](https://docs.rs/url/latest/url)
 
 ## How to Run
 Run the following directly under the project.

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ex54: URL Shortener</title>
+  <style>
+  </style>
+</head>
+<body>
+  <h1>Ex 54: URL Shortener</h1>
+  <section>
+    <form method="post" action="/ex54">
+      <input type="text" id="snippet" name="long_url" required>
+      <button type="submit">Shorten</button>
+      {% if error %}
+        <p style="color: red;">{{ error }}</p>
+      {% endif %}
+    </form>
+  </section>
+</body>
+</html>

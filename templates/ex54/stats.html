@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ex54: URL Shortener</title>
+  <style>
+  </style>
+</head>
+<body>
+  <h1>Ex 54: URL Shortener</h1>
+  <section>
+    <div>
+      <h2>Statistics</h2>
+      <p>URL: <a href="{{ long_url }}">{{ long_url }}</a></p>
+      <p>Short URL: <a href="{{ origin }}/ex54/{{ short_url }}" target="_blank">{{ short_url }}</a></p>
+      <p>Access Count: {{ visit_count }}</p>
+    </div>
+  </section>
+</body>
+</html>
