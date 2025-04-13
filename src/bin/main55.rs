@@ -15,6 +15,7 @@ use serde::{Serialize, Deserialize};
 use mongodb::{Collection, Client, bson::doc};
 use md5::Digest;
 use std::fmt::Display;
+use uuid::Uuid;
 
 const INPUT_SNIPPET_TEMPLATE:   &str = "input.html";
 const DISPLAY_SNIPPET_TEMPLATE: &str = "display.html";
@@ -35,7 +36,7 @@ struct StartEditingForm {
     slug: String,
 }
 fn generate_slug(snippet: &str) -> String {
-    let text = format!("{}{}", snippet, rand::random::<u32>());
+    let text = format!("{}{}", snippet, Uuid::new_v4());
 
     let mut hasher = md5::Md5::new();
     hasher.update(text.as_bytes());
@@ -44,12 +45,17 @@ fn generate_slug(snippet: &str) -> String {
 }
 
 fn internal_server_error_res(e: impl ToString) -> HttpResponse {
-    HttpResponse::InternalServerError().body(e.to_string())
+    eprintln!("Internal Server Error: {}", e.to_string());
+    HttpResponse::InternalServerError().body("Unexpected error occurred")
 }
 fn template_server_error_res(e: impl Display) -> HttpResponse {
     internal_server_error_res(format!("Template Error: {}", e))
 }
-fn with_snippet<F>(collection: Result<Option<Snippet>, mongodb::error::Error> , slug: &str, f: F) -> HttpResponse
+fn process_snippet_or_error<F>(
+    collection: Result<Option<Snippet>, mongodb::error::Error> ,
+    slug: &str,
+    f: F
+) -> HttpResponse
 where
     F: FnOnce(&Snippet) -> HttpResponse,
 {
@@ -70,12 +76,14 @@ async fn find_snippet(
     mongo: web::Data<Client>,
     slug:  String,
 ) -> Result<Option<Snippet>, mongodb::error::Error> {
-    let collection: Collection<Snippet> = mongo.database(DB_NAME).collection(COLL_NAME);
-    collection.find_one(doc! { "slug": &slug }).await
+    snippet_collection(&mongo).find_one(doc! { "slug": &slug }).await
+}
+fn snippet_collection(mongo: &Client) -> Collection<Snippet> {
+    mongo.database(DB_NAME).collection(COLL_NAME)
 }
 
 #[get("/ex55")]
-async fn get_init_page(template: web::Data<Tera>) -> HttpResponse {
+async fn get_input_page(template: web::Data<Tera>) -> HttpResponse {
     let mut ctx = Context::new();
     ctx.insert("snippet", "");
     render(&template, INPUT_SNIPPET_TEMPLATE, &ctx)
@@ -88,17 +96,18 @@ async fn get_snippet(
     slug:  web::Path<String>
 ) -> HttpResponse {
     let mut ctx = Context::new();
-    let slug = slug.into_inner();
+    let slug    = slug.into_inner();
 
-    with_snippet(find_snippet(mongo, slug.clone()).await, &slug, |snippet| {
-        ctx.insert("slug", &slug);
+    process_snippet_or_error(find_snippet(mongo, slug.clone()).await, &slug, |snippet| {
+        ctx.insert("slug",    &slug);
         ctx.insert("snippet", &snippet.text);
+
         render(&tmpl, DISPLAY_SNIPPET_TEMPLATE, &ctx)
     })
 }
 
 #[post("/ex55/edit")]
-async fn post_edit_page(
+async fn get_edit_form(
     tmpl:  web::Data<Tera>,
     mongo: web::Data<Client>,
     form:  web::Form<StartEditingForm>,
@@ -106,27 +115,29 @@ async fn post_edit_page(
     let mut ctx = Context::new();
     let slug    = form.into_inner().slug;
 
-    with_snippet(find_snippet(mongo, slug.clone()).await, &slug, |snippet| {
-        ctx.insert("slug", &slug);
+    process_snippet_or_error(find_snippet(mongo, slug.clone()).await, &slug, |snippet| {
+        ctx.insert("slug",    &slug);
         ctx.insert("snippet", &snippet.text);
+
         render(&tmpl, INPUT_SNIPPET_TEMPLATE, &ctx)
     })
 }
 
 #[post("/ex55")]
-async fn post_snippet(
+async fn submit_snippet(
     mongo: web::Data<Client>,
     form:  web::Form<SnippetForm>,
 ) -> HttpResponse {
     let form = form.into_inner();
-    let slug = generate_slug(&form.snippet);
-    let collection: Collection<Snippet> = mongo.database(DB_NAME).collection(COLL_NAME);
+    let slug = &generate_slug(&form.snippet);
     let snippet = Snippet {
-        slug: slug.clone(),
-        text: form.snippet.clone(),
+        slug: slug.to_string(),
+        text: form.snippet,
     };
-    match collection.insert_one(snippet).await {
-        Ok(_) => HttpResponse::SeeOther().append_header(("Location", format!("/ex55/{}", slug))).finish(),
+    match snippet_collection(&mongo).insert_one(snippet).await {
+        Ok(_) => HttpResponse::SeeOther()
+            .append_header(("Location", format!("/ex55/{}", slug)))
+            .finish(),
         Err(err) => internal_server_error_res(err),
     }
 }
@@ -141,10 +152,10 @@ async fn main() -> std::io::Result<()> {
             .wrap(Logger::default())
             .app_data(web::Data::new(tera.clone()))
             .app_data(web::Data::new(mongo.clone()))
-            .service(get_init_page)
-            .service(post_edit_page)
+            .service(get_input_page)
+            .service(get_edit_form)
             .service(get_snippet)
-            .service(post_snippet)
+            .service(submit_snippet)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
