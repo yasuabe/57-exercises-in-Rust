@@ -20,7 +20,10 @@ use redis::{Connection, Commands};
 use std::sync::Arc;
 use std::sync::Mutex;
 use serde::Deserialize;
-use url::Url;
+use url::{ParseError, Url};
+use redis::RedisError;
+use std::sync::MutexGuard;
+use std::sync::PoisonError;
 
 const ORIGIN: &str = "http://localhost:8080";
 
@@ -29,12 +32,11 @@ struct LongUrlForm {
     long_url: String,
 }
 
-fn connect_to_redis() -> Arc<Mutex<Connection>> {
-    let con = match redis::Client::open("redis://127.0.0.1:6379/") {
-        Ok(client) => client.get_connection(),
-        Err(err)   => Err(err), // TODO: seek better error handling
-    };
-    Arc::new(Mutex::new(con.expect("Failed to connect to Redis")))
+fn connect_to_redis() -> Result<Arc<Mutex<Connection>>, AppError> {
+    let client     = redis::Client::open("redis://127.0.0.1:6379/")?;
+    let connection = client.get_connection()?;
+
+    Ok(Arc::new(Mutex::new(connection)))
 }
 
 fn make_short_url(_: &str) -> String {
@@ -42,11 +44,101 @@ fn make_short_url(_: &str) -> String {
     chrono::Utc::now().timestamp_millis().to_string()
 }
 
+#[derive(Debug)]
+enum AppError {
+    Parse(ParseError),
+    Poison(String),
+    Redis(RedisError),
+}
+
+impl From<ParseError> for AppError {
+    fn from(err: ParseError) -> AppError {
+        AppError::Parse(err)
+    }
+}
+impl<T> From<PoisonError<MutexGuard<'_, T>>> for AppError {
+    fn from(_err: PoisonError<MutexGuard<T>>) -> AppError {
+        AppError::Poison("mutex poisoned".into())
+    }
+}
+impl From<RedisError> for AppError {
+    fn from(err: RedisError) -> AppError {
+        AppError::Redis(err)
+    }
+}
+fn to_redis_key(short_url: &str) -> String {
+    format!("ex54:short_urls:{}", short_url)
+}
+fn register_url(
+    form: web::Form<LongUrlForm>,
+    con:  web::Data<Arc<Mutex<Connection>>>,
+) -> Result<String, AppError> {
+    let url       = Url::parse(&form.long_url)?;
+    let long_url  = url.as_str();
+    let short_url = make_short_url(long_url);
+    let mut con   = con.lock()?;
+    let key       = to_redis_key(&short_url);
+    let items     = [ ("long_url"   , long_url        ) ,
+                      ("visit_count", &"0".to_string()) ];
+    let _: ()     = con.hset_multiple(key, &items)?;
+
+    Ok(short_url)
+}
+fn get_long_url(
+    short_url: web::Path<String>,
+    con:       web::Data<Arc<Mutex<Connection>>>,
+) -> Result<String, AppError> {
+    let key      = to_redis_key(&short_url);
+    let mut con  = con.lock()?;
+    let long_url = con.hget (&key, "long_url")?;
+    let _: ()    = con.hincr(&key, "visit_count", 1)?;
+
+    Ok(long_url)
+}
+fn get_visit_count(
+    short_url:  web::Path<String>,
+    connection: web::Data<Arc<Mutex<Connection>>>,
+    context:    &mut Context,
+) -> Result<(), AppError> {
+    let mut con          = connection.lock()?;
+    let short_url        = short_url.into_inner();
+    let key              = to_redis_key(&short_url);
+    let long_url: String = con.hget(&key, "long_url")?;
+    let visit_count: i32 = con.hget(&key, "visit_count")?;
+
+    context.insert("origin",      ORIGIN);
+    context.insert("short_url",   &short_url);
+    context.insert("long_url",    &long_url);
+    context.insert("visit_count", &visit_count);
+
+    Ok(())
+}
+fn internal_server_error(
+    message: String,
+) -> HttpResponse {
+    HttpResponse::InternalServerError().body(message)
+}
+fn default_error_handling(err: AppError) -> HttpResponse {
+    match err {
+        AppError::Parse(e)  => HttpResponse::BadRequest().body(format!("Invalid URL: {}", e)),
+        AppError::Poison(e) => internal_server_error(format!("Failed to lock Redis connection: {}", e)),
+        AppError::Redis(e)  => internal_server_error(format!("Failed to store short URL: {}", e)),
+    }
+}
+fn render_or_error(
+    tera:          &Tera,
+    template_name: &str,
+    context:       &Context,
+) -> HttpResponse {
+    match tera.render(template_name, &context) {
+        Ok(rendered) => HttpResponse::Ok().body(rendered),
+        Err(err)     => internal_server_error(format!("Error rendering template: {}", err)),
+    }
+}
+
 #[get("/ex54")]
 async fn get_input_page(tera: web::Data<Tera>) -> HttpResponse {
-    let context = Context::new();
-    let rendered = tera.render("input.html", &context).unwrap();
-    HttpResponse::Ok().body(rendered)
+    render_or_error(&tera, "input.html", &Context::new())
 }
 
 #[get("/ex54/{short_url}")]
@@ -54,80 +146,48 @@ async fn redirect_to_long_url(
     short_url: web::Path<String>,
     con:       web::Data<Arc<Mutex<Connection>>>,
 ) -> HttpResponse {
-    let short_url = short_url.into_inner();
-    let key       = format!("ex54:short_urls:{}", short_url);
-
-    let mut con          = con.lock().unwrap();
-    let long_url: String = con.hget (&key, "long_url").unwrap();
-    let _: ()            = con.hincr(&key, "visit_count", 1).unwrap();
-
-    HttpResponse::Found().append_header(("Location", long_url)).finish()
+    match get_long_url(short_url, con) {
+        Ok(long_url) => HttpResponse::Found().append_header(("Location", long_url)).finish(),
+        Err(err)     => default_error_handling(err)
+    }
 }
 
 #[post("/ex54")]
 async fn submit_long_url(
     form: web::Form<LongUrlForm>,
     tera: web::Data<Tera>,
-    con: web::Data<Arc<Mutex<Connection>>>,
+    con:  web::Data<Arc<Mutex<Connection>>>,
 ) -> HttpResponse {
-    let long_url = &form.long_url;
-    match Url::parse(long_url) {
-        Ok(_) => {
-            let short_url = make_short_url(long_url);
-            println!("short url: {}", short_url);
-            match con.lock() {
-                Ok(mut con) => {
-                    let _: () = con.hset_multiple(
-                        format!("ex54:short_urls:{}", short_url),
-                        &[("long_url", long_url), ("visit_count", &"0".to_string())]
-                    ).unwrap(); // TODO: remove unwrap 
-                }
-                Err(_) => {
-                    return HttpResponse::InternalServerError().body("Failed to connect to Redis");
-                }
-            }
-            HttpResponse::Found()
-                .append_header(("Location", format!("/ex54/{}/stats", short_url)))
-                .finish()
-        }
-        Err(_) => {
+    match register_url(form, con) {
+        Ok(short_url) => HttpResponse::Found()
+            .append_header(("Location", format!("/ex54/{}/stats", short_url)))
+            .finish(),
+        Err(AppError::Parse(_))  => {
             let mut context = Context::new();
             context.insert("error", "Invalid URL");
-            let rendered = tera.render("input.html", &context).unwrap();
-            return HttpResponse::BadRequest().body(rendered);
-        }
+            render_or_error(&tera, "input.html", &context)
+        },
+        Err(err) => default_error_handling(err)
     }
 }
 
 #[get("/ex54/{short_url}/stats")]
 async fn get_stats(
-    short_url: web::Path<String>,
-    tera: web::Data<Tera>,
-    con: web::Data<Arc<Mutex<Connection>>>,
+    short_url:  web::Path<String>,
+    tera:       web::Data<Tera>,
+    connection: web::Data<Arc<Mutex<Connection>>>,
 ) -> HttpResponse {
     let mut context = Context::new();
-    let short_url = short_url.into_inner();
-    match con.lock() {
-        Ok(mut con) => {
-            let long_url: String = con.hget(format!("ex54:short_urls:{}", short_url), "long_url").unwrap();
-            let visit_count: i32 = con.hget(format!("ex54:short_urls:{}", short_url), "visit_count").unwrap();
-            context.insert("origin", ORIGIN);
-            context.insert("short_url", &short_url);
-            context.insert("long_url", &long_url);
-            context.insert("visit_count", &visit_count);
-        }
-        Err(_) => {
-            return HttpResponse::InternalServerError().body("Failed to connect to Redis");
-        }
+    match get_visit_count(short_url, connection, &mut context) {
+        Ok(())   => render_or_error(&tera, "stats.html", &context),
+        Err(err) => default_error_handling(err),
     }
-    let rendered = tera.render("stats.html", &context).unwrap();
-    HttpResponse::Ok().body(rendered)
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let tera  = Tera::new("templates/ex54/**/*").expect("Failed to initialize Tera templates");
-    let con = connect_to_redis();
+    let tera = Tera::new("templates/ex54/**/*").expect("Failed to initialize Tera templates");
+    let con  = connect_to_redis().expect("Failed to connect to Redis");
 
     HttpServer::new(move || {
         App::new()
