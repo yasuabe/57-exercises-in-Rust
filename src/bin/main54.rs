@@ -20,10 +20,10 @@ use redis::{Connection, Commands};
 use std::sync::Arc;
 use std::sync::Mutex;
 use serde::Deserialize;
-use url::{ParseError, Url};
-use redis::RedisError;
+use url::Url;
 use std::sync::MutexGuard;
 use std::sync::PoisonError;
+use thiserror::Error;
 
 const ORIGIN:  &str = "http://localhost:8080";
 const SEQ_KEY: &str = "ex54:short_urls:sequence";
@@ -53,26 +53,21 @@ fn make_short_url(seq: i64) -> String {
     String::from_utf8(short_url).unwrap()
 }
 
-#[derive(Debug)]
+#[derive(Debug, Error)]
 enum AppError {
-    Parse(ParseError),
+    #[error("Invalid URL: {0}")]
+    Parse(#[from] url::ParseError),
+
+    #[error("Failed to lock Redis connection: {0}")]
     Poison(String),
-    Redis(RedisError),
+
+    #[error("Redis error: {0}")]
+    Redis(#[from] redis::RedisError),
 }
 
-impl From<ParseError> for AppError {
-    fn from(err: ParseError) -> AppError {
-        AppError::Parse(err)
-    }
-}
 impl<T> From<PoisonError<MutexGuard<'_, T>>> for AppError {
     fn from(_err: PoisonError<MutexGuard<T>>) -> AppError {
         AppError::Poison("mutex poisoned".into())
-    }
-}
-impl From<RedisError> for AppError {
-    fn from(err: RedisError) -> AppError {
-        AppError::Redis(err)
     }
 }
 fn to_redis_key(short_url: &str) -> String {
@@ -200,8 +195,8 @@ async fn get_stats(
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let tera          = Tera::new("templates/ex54/**/*").expect("Failed to initialize Tera templates");
-    let shared_redis  = connect_to_redis().expect("Failed to connect to Redis");
+    let tera         = Tera::new("templates/ex54/**/*").expect("Failed to initialize Tera templates");
+    let shared_redis = connect_to_redis().expect("Failed to connect to Redis");
 
     HttpServer::new(move || {
         App::new()
