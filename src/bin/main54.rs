@@ -25,7 +25,8 @@ use redis::RedisError;
 use std::sync::MutexGuard;
 use std::sync::PoisonError;
 
-const ORIGIN: &str = "http://localhost:8080";
+const ORIGIN:  &str = "http://localhost:8080";
+const SEQ_KEY: &str = "ex54:short_urls:sequence";
 
 #[derive(Deserialize)]
 struct LongUrlForm {
@@ -33,10 +34,10 @@ struct LongUrlForm {
 }
 
 fn connect_to_redis() -> Result<Arc<Mutex<Connection>>, AppError> {
-    let client     = redis::Client::open("redis://127.0.0.1:6379/")?;
-    let connection = client.get_connection()?;
+    let client       = redis::Client::open("redis://127.0.0.1:6379/")?;
+    let shared_redis = client.get_connection()?;
 
-    Ok(Arc::new(Mutex::new(connection)))
+    Ok(Arc::new(Mutex::new(shared_redis)))
 }
 
 fn make_short_url(seq: i64) -> String {
@@ -77,15 +78,18 @@ impl From<RedisError> for AppError {
 fn to_redis_key(short_url: &str) -> String {
     format!("ex54:short_urls:{}", short_url)
 }
+fn lock_con(con: &web::Data<Arc<Mutex<Connection>>>) -> Result<MutexGuard<'_, Connection>, AppError> {
+    Ok(con.lock()?)
+}
 fn register_url(
-    form:       web::Form<LongUrlForm>,
-    connection: web::Data<Arc<Mutex<Connection>>>,
+    form:         web::Form<LongUrlForm>,
+    shared_redis: web::Data<Arc<Mutex<Connection>>>,
 ) -> Result<String, AppError> {
     let url      = Url::parse(&form.long_url)?;
     let long_url = url.as_str();
 
-    let mut con   = connection.lock()?;
-    let seq: i64  = con.incr("ex54:short_urls:sequence", 1)?;
+    let mut con   = lock_con(&shared_redis)?;
+    let seq: i64  = con.incr(SEQ_KEY, 1)?;
     let short_url = make_short_url(seq);
     let key       = to_redis_key(&short_url);
     let items     = [ ("long_url"   , long_url        ) ,
@@ -99,7 +103,7 @@ fn get_long_url(
     connection: web::Data<Arc<Mutex<Connection>>>,
 ) -> Result<String, AppError> {
     let key      = to_redis_key(&short_url);
-    let mut con  = connection.lock()?;
+    let mut con  = lock_con(&connection)?;
     let long_url = con.hget (&key, "long_url")?;
     let _: ()    = con.hincr(&key, "visit_count", 1)?;
 
@@ -110,7 +114,7 @@ fn get_visit_count(
     connection: web::Data<Arc<Mutex<Connection>>>,
     context:    &mut Context,
 ) -> Result<(), AppError> {
-    let mut con          = connection.lock()?;
+    let mut con          = lock_con(&connection)?;
     let short_url        = short_url.into_inner();
     let key              = to_redis_key(&short_url);
     let long_url: String = con.hget(&key, "long_url")?;
@@ -196,14 +200,14 @@ async fn get_stats(
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let tera = Tera::new("templates/ex54/**/*").expect("Failed to initialize Tera templates");
-    let con  = connect_to_redis().expect("Failed to connect to Redis");
+    let tera          = Tera::new("templates/ex54/**/*").expect("Failed to initialize Tera templates");
+    let shared_redis  = connect_to_redis().expect("Failed to connect to Redis");
 
     HttpServer::new(move || {
         App::new()
             .wrap(Logger::default())
             .app_data(web::Data::new(tera.clone()))
-            .app_data(web::Data::new(con.clone()))
+            .app_data(web::Data::new(shared_redis.clone()))
             .service(submit_long_url)
             .service(get_stats)
             .service(redirect_to_long_url)
