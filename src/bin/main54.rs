@@ -39,9 +39,17 @@ fn connect_to_redis() -> Result<Arc<Mutex<Connection>>, AppError> {
     Ok(Arc::new(Mutex::new(connection)))
 }
 
-fn make_short_url(_: &str) -> String {
-    // TODO: replace below with a real short URL generator
-    chrono::Utc::now().timestamp_millis().to_string()
+fn make_short_url(seq: i64) -> String {
+    const BASE62: &[u8] = b"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let mut short_url = Vec::new();
+    let mut num = seq + 10_000_000_000;
+    while num > 0 {
+        let remainder = (num % 62) as usize;
+        short_url.push(BASE62[remainder]);
+        num /= 62;
+    }
+    short_url.reverse();
+    String::from_utf8(short_url).unwrap()
 }
 
 #[derive(Debug)]
@@ -70,13 +78,15 @@ fn to_redis_key(short_url: &str) -> String {
     format!("ex54:short_urls:{}", short_url)
 }
 fn register_url(
-    form: web::Form<LongUrlForm>,
-    con:  web::Data<Arc<Mutex<Connection>>>,
+    form:       web::Form<LongUrlForm>,
+    connection: web::Data<Arc<Mutex<Connection>>>,
 ) -> Result<String, AppError> {
-    let url       = Url::parse(&form.long_url)?;
-    let long_url  = url.as_str();
-    let short_url = make_short_url(long_url);
-    let mut con   = con.lock()?;
+    let url      = Url::parse(&form.long_url)?;
+    let long_url = url.as_str();
+
+    let mut con   = connection.lock()?;
+    let seq: i64  = con.incr("ex54:short_urls:sequence", 1)?;
+    let short_url = make_short_url(seq);
     let key       = to_redis_key(&short_url);
     let items     = [ ("long_url"   , long_url        ) ,
                       ("visit_count", &"0".to_string()) ];
@@ -85,11 +95,11 @@ fn register_url(
     Ok(short_url)
 }
 fn get_long_url(
-    short_url: web::Path<String>,
-    con:       web::Data<Arc<Mutex<Connection>>>,
+    short_url:  web::Path<String>,
+    connection: web::Data<Arc<Mutex<Connection>>>,
 ) -> Result<String, AppError> {
     let key      = to_redis_key(&short_url);
-    let mut con  = con.lock()?;
+    let mut con  = connection.lock()?;
     let long_url = con.hget (&key, "long_url")?;
     let _: ()    = con.hincr(&key, "visit_count", 1)?;
 
@@ -136,7 +146,7 @@ fn render_or_error(
     }
 }
 
-#[get("/ex54")]
+#[get("/ex54/")]
 async fn get_input_page(tera: web::Data<Tera>) -> HttpResponse {
     render_or_error(&tera, "input.html", &Context::new())
 }
@@ -152,13 +162,13 @@ async fn redirect_to_long_url(
     }
 }
 
-#[post("/ex54")]
+#[post("/ex54/")]
 async fn submit_long_url(
-    form: web::Form<LongUrlForm>,
-    tera: web::Data<Tera>,
-    con:  web::Data<Arc<Mutex<Connection>>>,
+    form:        web::Form<LongUrlForm>,
+    tera:        web::Data<Tera>,
+    connection:  web::Data<Arc<Mutex<Connection>>>,
 ) -> HttpResponse {
-    match register_url(form, con) {
+    match register_url(form, connection) {
         Ok(short_url) => HttpResponse::Found()
             .append_header(("Location", format!("/ex54/{}/stats", short_url)))
             .finish(),
