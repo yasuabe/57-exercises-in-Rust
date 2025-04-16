@@ -50,6 +50,17 @@ Run the following directly under the project.
 ```
 $ cargo run --bin main[nn]
 ```
+### Ex51: Pushing Notes to Firebase
+#### Prerequisites
+- A configured Firebase project
+  - Ability to obtain an ID token as an Email/Password user
+  - Access via a REST client (e.g., `curl`, Postman) using the ID token
+#### Setup
+  - Copy the template: cp config/ex51_config.json.template config/ex51_config.json
+  - Replace placeholders in config/ex51_config.json with actual values.
+#### Caution
+The ID token is stored in output/id_token.txt. Keep it secure.
+
 ### Ex52: Creating Your Own Time Service
 1. Run `cargo run --bin main52`.
 2. From another terminal, run cargo run --bin main52_client.
