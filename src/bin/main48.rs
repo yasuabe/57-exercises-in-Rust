@@ -7,12 +7,21 @@
 - Constraint: Separate logic for fetching weather data from display logic.
 */
 use serde::de::Error;
+use serde::Deserialize;
 use serde_json::Value;
 use reqwest;
 use exercises_for_programmer::utils::std_util::read_input;
 use thiserror::Error;
+use once_cell::sync::OnceCell;
 
 const CONFIG_PATH: &str = "config/ex48_config.json";
+static CONFIG: OnceCell<Config> = OnceCell::new();
+
+#[derive(Debug, Deserialize)]
+struct Config {
+    #[serde(rename = "apiKey")]
+    api_key: String,
+}
 
 #[derive(Error, Debug)]
 pub enum AppError {
@@ -36,8 +45,8 @@ fn weather_url(city: &str, api_key: &str) -> String {
     )
 }
 async fn get_temperature(city: &str) -> Result<f64, AppError> {
-    let api_key  = read_api_key_from_config()?;
-    let url      = weather_url(city, &api_key);
+    let config   = load_config()?;
+    let url      = weather_url(city, &config.api_key);
     let v: Value = reqwest::get(url)
         .await?
         .json()
@@ -57,14 +66,12 @@ fn display_temperature(city: String, temp: f64) {
 fn read_city() -> String {
     read_input("Enter a city name: ").trim().to_string()
 }
-fn read_api_key_from_config() -> Result<String, AppError> {
-    let config   = std::fs::read_to_string(CONFIG_PATH)?;
-    let v: Value = serde_json::from_str(&config)?;
-
-    v["apiKey"]
-        .as_str()
-        .map(|s| s.trim().to_string())
-        .ok_or_else(|| json_error("Missing or invalid 'apiKey'"))
+fn load_config() -> Result<&'static Config, AppError> {
+    CONFIG.get_or_try_init(|| {
+        let config_str     = std::fs::read_to_string(CONFIG_PATH)?;
+        let config: Config = serde_json::from_str(&config_str)?;
+        Ok(config)
+    })
 }
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

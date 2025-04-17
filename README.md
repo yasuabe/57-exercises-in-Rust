@@ -32,6 +32,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex46. [Word Frequency Finder](src/bin/main46.rs)
 #### Chapter 9:
 - Ex47. [Who’s in Space?](src/bin/main47.rs)
+- Ex48. [Grabbing the Weather](src/bin/main48.rs)
 - Ex52. [Creating Your Own Time Service](src/bin/main52.rs)
 #### Chapter 10:
 - Ex53. [Todo List](src/bin/main53.rs)
@@ -50,13 +51,18 @@ Run the following directly under the project.
 ```
 $ cargo run --bin main[nn]
 ```
+### Ex48: Grabbing the Weather
+- Register with OpenWeather and obtain an API key (no subscription required).
+- Copy config template: `cp config/ex48_config.json.template config/ex48_config.json`
+- Replace placeholders in config/ex51_config.json with API key
+
 ### Ex51: Pushing Notes to Firebase
 #### Prerequisites
 - A configured Firebase project
   - Ability to obtain an ID token as an Email/Password user
   - Access via a REST client (e.g., `curl`, Postman) using the ID token
 #### Setup
-  - Copy the template: cp config/ex51_config.json.template config/ex51_config.json
+  - Copy the template: `cp config/ex51_config.json.template config/ex51_config.json`
   - Replace placeholders in config/ex51_config.json with actual values.
 #### Caution
 The ID token is stored in output/id_token.txt. Keep it secure.
