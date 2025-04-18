@@ -14,6 +14,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 #### Chapter 3: Calculations
 - Ex07. [Area of a Rectangular Room](src/bin/main07.rs)
 - Ex08. [Pizza Party](src/bin/main08.rs)
+- Ex11. [Currency Conversion](src/bin/main11.rs)
 - Ex13. [Determining Compound Interest](src/bin/main13.rs)
 #### Chapter 4:
 - Ex14. [Tax Calculator](src/bin/main14.rs)

@@ -26,3 +26,6 @@ pub fn read_int(prompt: &str) -> i32 {
 pub fn read_float(prompt: &str) -> f32 {
     read_parsed(prompt, "Please enter a valid floating-point number.")
 }
+pub fn read_f64(prompt: &str) -> f64 {
+    read_parsed(prompt, "Please enter a valid f64 number.")
+}
