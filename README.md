@@ -17,6 +17,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex13. [Determining Compound Interest](src/bin/main13.rs)
 #### Chapter 4:
 - Ex14. [Tax Calculator](src/bin/main14.rs)
+- Ex17. [Blood Alcohol Calculator](src/bin/main17.rs)
 - Ex23. [Troubleshooting Car Issues](src/bin/main23.rs)
 #### Chapter 5:
 - Ex24. [Anagram Checker](src/bin/main24.rs)
@@ -44,7 +45,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 ## Technologies Used
 
 - rust 1.85.1, cargo 1.85.1
-- [libraries](Cargo.toml): [chrono](https://docs.rs/chrono/latest/chrono/), [once_cell](https://docs.rs/once_cell/latest/once_cell/), [regex](https://docs.rs/regex/latest/regex/), [rand](https://rand/docs.rs/latest/rand/), [itertools](https://docs.rs/itertools/latest/itertools/), [reqwest](https://docs.rs/reqwest/latest/reqwest/), [tokio](https://docs.rs/tokio/latest/tokio/), [serde](https://docs.rs/serde/latest/serde/), [serde_json](https://docs.rs/serde_json/latest/serde_json/), [actix-web](https://docs.rs/actix-web/latest/actix-web/), [redis](https://docs.rs/redis/latest/redis/), [tera](https://docs.rs/tera/latest/tera/), [mongodb](https://docs.rs/mongodb/latest/mongodb), [md-5](https://docs.rs/md-5/latest/md-5), [uuid](https://docs.rs/uuid/latest/uuid), [url](https://docs.rs/url/latest/url)
+- [libraries](Cargo.toml): [chrono](https://docs.rs/chrono/latest/chrono/), [once_cell](https://docs.rs/once_cell/latest/once_cell/), [regex](https://docs.rs/regex/latest/regex/), [rand](https://rand/docs.rs/latest/rand/), [itertools](https://docs.rs/itertools/latest/itertools/), [reqwest](https://docs.rs/reqwest/latest/reqwest/), [tokio](https://docs.rs/tokio/latest/tokio/), [serde](https://docs.rs/serde/latest/serde/), [serde_json](https://docs.rs/serde_json/latest/serde_json/), [actix-web](https://docs.rs/actix-web/latest/actix-web/), [redis](https://docs.rs/redis/latest/redis/), [tera](https://docs.rs/tera/latest/tera/), [mongodb](https://docs.rs/mongodb/latest/mongodb), [md-5](https://docs.rs/md-5/latest/md-5), [uuid](https://docs.rs/uuid/latest/uuid), [url](https://docs.rs/url/latest/url), [thiserror](https://docs.rs/thiserror/latest/thiserror), [clap](https://docs.rs/clap/latest/clap), [anyhow](https://docs.rs/anyhow/latest/anyhow),
 
 ## How to Run
 Run the following directly under the project.
