@@ -51,6 +51,9 @@ Run the following directly under the project.
 ```
 $ cargo run --bin main[nn]
 ```
+### Ex45: Word Finder
+`cargo run --bin main45 -- -o [output file name]`
+
 ### Ex48: Grabbing the Weather
 - Register with OpenWeather and obtain an API key (no subscription required).
 - Copy config template: `cp config/ex48_config.json.template config/ex48_config.json`
