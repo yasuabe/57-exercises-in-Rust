@@ -27,6 +27,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex27. [Validating Inputs](src/bin/main27.rs)
 #### Chapter 6: Repetition
 - Ex28. [Adding Numbers](src/bin/main28.rs)
+- Ex30. [Multiplication Table](src/bin/main30.rs)
 - Ex32. [Guess the Number Game](src/bin/main32.rs)
 #### Chapter 7: Data Structures
 - Ex33. [Magic 8 Ball](src/bin/main33.rs)
