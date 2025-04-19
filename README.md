@@ -16,27 +16,28 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex08. [Pizza Party](src/bin/main08.rs)
 - Ex11. [Currency Conversion](src/bin/main11.rs)
 - Ex13. [Determining Compound Interest](src/bin/main13.rs)
-#### Chapter 4:
+#### Chapter 4: Making Decisions
 - Ex14. [Tax Calculator](src/bin/main14.rs)
 - Ex17. [Blood Alcohol Calculator](src/bin/main17.rs)
+- Ex20. [Multistate Sales Tax Calculator](src/bin/main20.rs)
 - Ex23. [Troubleshooting Car Issues](src/bin/main23.rs)
-#### Chapter 5:
+#### Chapter 5: Functions
 - Ex24. [Anagram Checker](src/bin/main24.rs)
 - Ex27. [Validating Inputs](src/bin/main27.rs)
-#### Chapter 6:
+#### Chapter 6: Repetition
 - Ex28. [Adding Numbers](src/bin/main28.rs)
 - Ex32. [Guess the Number Game](src/bin/main32.rs)
-#### Chapter 7:
+#### Chapter 7: Data Structures
 - Ex33. [Magic 8 Ball](src/bin/main33.rs)
 - Ex40. [Filtering Records](src/bin/main40.rs)
-#### Chapter 8:
+#### Chapter 8: Working with Files
 - Ex41. [Name Sorter](src/bin/main41.rs)
 - Ex46. [Word Frequency Finder](src/bin/main46.rs)
-#### Chapter 9:
+#### Chapter 9: Working with External Services
 - Ex47. [Who’s in Space?](src/bin/main47.rs)
 - Ex48. [Grabbing the Weather](src/bin/main48.rs)
 - Ex52. [Creating Your Own Time Service](src/bin/main52.rs)
-#### Chapter 10:
+#### Chapter 10: Full Programs
 - Ex53. [Todo List](src/bin/main53.rs)
 - Ex54. [URL Shortener](src/bin/main54.rs)
 - Ex55. [Text Sharing](src/bin/main55.rs)
