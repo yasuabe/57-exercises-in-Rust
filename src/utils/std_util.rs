@@ -23,6 +23,9 @@ where T: std::str::FromStr {
 pub fn read_int(prompt: &str) -> i32 {
     read_parsed(prompt, "Please enter a valid number.")
 }
+pub fn read_u32(prompt: &str) -> u32 {
+    read_parsed(prompt, "Please enter a valid u32 number.")
+}
 pub fn read_float(prompt: &str) -> f32 {
     read_parsed(prompt, "Please enter a valid floating-point number.")
 }
