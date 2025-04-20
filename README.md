@@ -17,6 +17,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex09: [Paint Calculator](src/bin/main09.rs)
 - Ex10: [Self-Checkout](src/bin/main10.rs)
 - Ex11. [Currency Conversion](src/bin/main11.rs)
+- Ex12. [Computing Simple Interest](src/bin/main12.rs)
 - Ex13. [Determining Compound Interest](src/bin/main13.rs)
 #### Chapter 4: Making Decisions
 - Ex14. [Tax Calculator](src/bin/main14.rs)
