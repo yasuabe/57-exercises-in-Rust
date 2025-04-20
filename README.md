@@ -1,4 +1,4 @@
-# *Exercises for Programmer* in Rust
+# *Exercises for Programmers* in Rust
 
 ## Overview
 A personal project to get started with Rust by solving the exercises from the book *Exercises for Programmers* in Rust.
@@ -35,6 +35,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex40. [Filtering Records](src/bin/main40.rs)
 #### Chapter 8: Working with Files
 - Ex41. [Name Sorter](src/bin/main41.rs)
+- Ex43. [Website Generator](src/bin/main43.rs)
 - Ex46. [Word Frequency Finder](src/bin/main46.rs)
 #### Chapter 9: Working with External Services
 - Ex47. [Who’s in Space?](src/bin/main47.rs)
