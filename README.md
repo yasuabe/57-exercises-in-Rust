@@ -31,6 +31,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex32. [Guess the Number Game](src/bin/main32.rs)
 #### Chapter 7: Data Structures
 - Ex33. [Magic 8 Ball](src/bin/main33.rs)
+- Ex37. [Password Generator](src/bin/main37.rs)
 - Ex40. [Filtering Records](src/bin/main40.rs)
 #### Chapter 8: Working with Files
 - Ex41. [Name Sorter](src/bin/main41.rs)
@@ -49,7 +50,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 ## Technologies Used
 
 - rust 1.85.1, cargo 1.85.1
-- [libraries](Cargo.toml): [chrono](https://docs.rs/chrono/latest/chrono/), [once_cell](https://docs.rs/once_cell/latest/once_cell/), [regex](https://docs.rs/regex/latest/regex/), [rand](https://rand/docs.rs/latest/rand/), [itertools](https://docs.rs/itertools/latest/itertools/), [reqwest](https://docs.rs/reqwest/latest/reqwest/), [tokio](https://docs.rs/tokio/latest/tokio/), [serde](https://docs.rs/serde/latest/serde/), [serde_json](https://docs.rs/serde_json/latest/serde_json/), [actix-web](https://docs.rs/actix-web/latest/actix-web/), [redis](https://docs.rs/redis/latest/redis/), [tera](https://docs.rs/tera/latest/tera/), [mongodb](https://docs.rs/mongodb/latest/mongodb), [md-5](https://docs.rs/md-5/latest/md-5), [uuid](https://docs.rs/uuid/latest/uuid), [url](https://docs.rs/url/latest/url), [thiserror](https://docs.rs/thiserror/latest/thiserror), [clap](https://docs.rs/clap/latest/clap), [anyhow](https://docs.rs/anyhow/latest/anyhow),
+- [libraries](Cargo.toml): [chrono](https://docs.rs/chrono/latest/chrono/), [once_cell](https://docs.rs/once_cell/latest/once_cell/), [regex](https://docs.rs/regex/latest/regex/), [rand](https://rand/docs.rs/latest/rand/), [itertools](https://docs.rs/itertools/latest/itertools/), [reqwest](https://docs.rs/reqwest/latest/reqwest/), [tokio](https://docs.rs/tokio/latest/tokio/), [serde](https://docs.rs/serde/latest/serde/), [serde_json](https://docs.rs/serde_json/latest/serde_json/), [actix-web](https://docs.rs/actix-web/latest/actix-web/), [redis](https://docs.rs/redis/latest/redis/), [tera](https://docs.rs/tera/latest/tera/), [mongodb](https://docs.rs/mongodb/latest/mongodb), [md-5](https://docs.rs/md-5/latest/md-5), [uuid](https://docs.rs/uuid/latest/uuid), [url](https://docs.rs/url/latest/url), [thiserror](https://docs.rs/thiserror/latest/thiserror), [clap](https://docs.rs/clap/latest/clap), [anyhow](https://docs.rs/anyhow/latest/anyhow), [proptest](https://docs.rs/proptest/latest/proptest)
 
 ## How to Run
 Run the following directly under the project.

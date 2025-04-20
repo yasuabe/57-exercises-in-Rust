@@ -13,17 +13,15 @@ use once_cell::sync::Lazy;
 use rand::seq::SliceRandom;
 use rand::Rng;
 
-
 const NUMBER_CHARS:   &str = "0123456789";
 const ALPHABET_LOWER: &str = "abcdefghijklmnopqrstuvwxyz";
 const ALPHABET_UPPER: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const SPECIAL_CHARS:  &str = r##"!@#$%^&*()_+-=[]{}|;:',.<>?/`~"##;
 
-const MAX_PASSWORD_LENGTH: usize = 30;
-
 static ALPHABET: Lazy<String> = Lazy::new(||{
     [ALPHABET_LOWER, ALPHABET_UPPER].concat()
 });
+const MAX_PASSWORD_LENGTH: usize = 30;
 
 struct PasswordSpec {
     min_length:    usize,
@@ -36,21 +34,18 @@ impl PasswordSpec {
         PasswordSpec { min_length, special_chars, numbers}
     }
 }
-fn pick_random_chars(chars: &str, num: usize) -> Vec<char> {
-    let mut rng = rand::thread_rng();
-    let vec = chars.chars().collect::<Vec<_>>();
-
-    (0..num).map(|_| vec[rng.gen_range(0..chars.len())]).collect()
-}
 fn generate_password(min_length: usize, special_chars: usize, numbers: usize) -> String {
     let mut rng = rand::thread_rng();
-    
-    let len = rng.gen_range(min_length..MAX_PASSWORD_LENGTH);
+    let len     = rng.gen_range(min_length..=MAX_PASSWORD_LENGTH);
 
+    fn pick_chars<R: Rng + ?Sized>(rng: &mut R, chars: &str, num: usize) -> Vec<char> {
+        let vec = chars.chars().collect::<Vec<_>>();
+        (0..num).map(|_| vec[rng.gen_range(0..chars.len())]).collect()
+    }
     let mut result =
-        pick_random_chars(       SPECIAL_CHARS, special_chars).into_iter()
-        .chain(pick_random_chars(NUMBER_CHARS,  numbers))
-        .chain(pick_random_chars(&ALPHABET,     len.saturating_sub(special_chars + numbers)))
+        pick_chars(       &mut rng, SPECIAL_CHARS, special_chars).into_iter()
+        .chain(pick_chars(&mut rng, NUMBER_CHARS,  numbers))
+        .chain(pick_chars(&mut rng, &ALPHABET,     len.saturating_sub(special_chars + numbers)))
         .collect::<Vec<_>>();
 
     result.shuffle(&mut rng);
@@ -106,7 +101,7 @@ mod tests {
     }
 
     fn valid_password_args() -> impl Strategy<Value = (usize, usize, usize)> {
-        (2..30_usize).prop_flat_map(|min_length| {
+        (2..=30_usize).prop_flat_map(|min_length| {
             (0..=min_length).prop_flat_map(move |special_chars| {
                 let max_numbers = min_length - special_chars;
                 (Just(min_length), Just(special_chars), 0..=max_numbers)
