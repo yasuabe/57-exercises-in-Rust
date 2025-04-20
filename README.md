@@ -32,6 +32,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex32. [Guess the Number Game](src/bin/main32.rs)
 #### Chapter 7: Data Structures
 - Ex33. [Magic 8 Ball](src/bin/main33.rs)
+- Ex35: [Picking a Winner](src/bin/main35.rs)
 - Ex37. [Password Generator](src/bin/main37.rs)
 - Ex40. [Filtering Records](src/bin/main40.rs)
 #### Chapter 8: Working with Files
