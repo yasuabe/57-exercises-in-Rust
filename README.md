@@ -44,6 +44,8 @@ A personal project to get started with Rust by solving the exercises from the bo
 #### Chapter 9: Working with External Services
 - Ex47. [Who’s in Space?](src/bin/main47.rs)
 - Ex48. [Grabbing the Weather](src/bin/main48.rs)
+- Ex50. [Movie Recommendations](src/bin/main50.rs)
+- Ex51: [Pushing Notes to Firebase](src/bin/main51.rs)
 - Ex52. [Creating Your Own Time Service](src/bin/main52.rs)
 #### Chapter 10: Full Programs
 - Ex53. [Todo List](src/bin/main53.rs)
@@ -69,6 +71,9 @@ $ cargo run --bin main[nn]
 - Register with OpenWeather and obtain an API key (no subscription required).
 - Copy config template: `cp config/ex48_config.json.template config/ex48_config.json`
 - Replace placeholders in config/ex51_config.json with API key
+### Ex50: 50	Movie Recommendations
+- PREREQUISITE: Register with OMDb and obtain an API key.
+- `$ export API_KEY=<your api key>`
 
 ### Ex51: Pushing Notes to Firebase
 #### Prerequisites
