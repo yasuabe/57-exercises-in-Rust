@@ -40,46 +40,90 @@ struct MyApp {
 }
 impl Default for MyApp {
     fn default() -> Self {
-        let given_tags: Vec<String> = std::env::args().skip(1).collect();
+        let cli_tags: Vec<String> = std::env::args().skip(1).collect();
         Self {
-            tags:       given_tags,
+            tags:       cli_tags,
             image_urls: None,
             textures:   vec![],
         }
     }
 }
-impl eframe::App for MyApp {
-    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+fn scaled_size(tex: &egui::TextureHandle) -> egui::Vec2 {
+    let [w, h] = tex.size();
+    let scale  = if w > h { 200.0 / w as f32 } else { 200.0 / h as f32 };
+    egui::vec2(w as f32 * scale, h as f32 * scale)
+}
+fn show_texture(ui: &mut egui::Ui, tex: &egui::TextureHandle, size: egui::Vec2) {
+    ui.image((tex.id(), size));
+}
+fn show_error(ui: &mut egui::Ui, msg: &str) {
+    ui.label(format!("Error: {msg}"));
+}
+fn show_loading(ui: &mut egui::Ui) {
+    ui.label("Loading...");
+}
+fn load_if_needed(
+    entry: &mut Option<Result<egui::TextureHandle, String>>,
+    ctx:   &egui::Context,
+    url:   &str,
+) {
+    if entry.is_none() {
+        *entry = Some(load_texture(ctx, url));
+    }
+}
+fn show_entry(ui: &mut egui::Ui, tex: &Result<egui::TextureHandle, String>) {
+    match tex {
+        Ok(tex) => show_texture(ui, tex, scaled_size(tex)),
+        Err(e)  => show_error(ui, e)
+    }
+}
+fn show_image_state(
+    ui:    &mut egui::Ui,
+    entry: &Option<Result<egui::TextureHandle, String>>,
+) {
+    match entry {
+        Some(result) => show_entry(ui, result),
+        None         => show_loading(ui),
+    }
+}
+fn show_image_at_index(
+    ctx:   &egui::Context,
+    ui:    &mut egui::Ui,
+    url:   &str,
+    entry: &mut Option<Result<egui::TextureHandle, String>>,
+) {
+    load_if_needed(entry, ctx, url);
+    show_image_state(ui, entry);
+}
+fn show_images(
+    ctx:      &egui::Context,
+    ui:       &mut egui::Ui,
+    urls:     &Vec<String>,
+    textures: &mut Vec<Option<Result<egui::TextureHandle, String>>>,
+) {
+    for (i, url) in urls.iter().enumerate() {
+        show_image_at_index(ctx, ui, url, &mut textures[i])
+    }
+}
+impl MyApp {
+    fn ensure_images_loaded(&mut self) {
         if self.image_urls.is_none() {
             self.image_urls = Some(fetch_image_urls(&self.tags));
-            self.textures   = vec![None; self.image_urls.as_ref().unwrap().len()];
+            let len         = self.image_urls.as_ref().unwrap().len();
+            self.textures   = vec![None; len];
         }
+    }
+}
+impl eframe::App for MyApp {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        self.ensure_images_loaded();
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.horizontal_wrapped(|ui| {
-                for (i, url) in self.image_urls.as_ref().unwrap().iter().enumerate() {
-                    if self.textures[i].is_none() {
-                        self.textures[i] = Some(load_texture(ctx, url));
-                    }
-                    match &self.textures[i] {
-                        Some(Ok(tex)) => {
-                            let [w, h] = tex.size();
-                            let scale  = if w > h { 200.0 / w as f32 } else { 200.0 / h as f32 };
-                            let size   = egui::vec2(w as f32 * scale, h as f32 * scale);
-                            ui.image((tex.id(), size));
-                        }
-                        Some(Err(e)) => {
-                            ui.label(format!("Error: {e}"));
-                        }
-                        None => {
-                            ui.label("Loading...");
-                        }
-                    }
-                }
+                show_images(ctx, ui, self.image_urls.as_ref().unwrap(), &mut self.textures);
             });
         });
     }
 }
-
 fn fetch_image_urls(tags: &[String]) -> Vec<String> {
     let tags = if tags.is_empty() { "" } else { &format!("&tags={}", tags.join(",")) };
     let url = format!(
@@ -89,8 +133,8 @@ fn fetch_image_urls(tags: &[String]) -> Vec<String> {
         .unwrap()
         .text()
         .unwrap();
-    let json_text = text.trim_start_matches("jsonFlickrFeed(").trim_end_matches(")");
-    let json = serde_json::from_str::<FlickrResponse>(json_text)
+    let trimmed_json = text.trim_start_matches("jsonFlickrFeed(").trim_end_matches(")");
+    let json         = serde_json::from_str::<FlickrResponse>(trimmed_json)
         .map_err(|e| format!("Failed to parse JSON: {}", e));
     match json {
         Ok(json) => json.items
