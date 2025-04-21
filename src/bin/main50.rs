@@ -32,10 +32,14 @@ struct Movie {
     plot:    String,
     ratings: Vec<Rating>,
 }
+fn parse_percentage(value: &str) -> Result<f64> {
+    value.trim_end_matches('%').parse::<f64>()
+        .with_context(|| format!("Failed to parse percentage from {}", value))
+}
 fn print_recommendation(ratings: &[Rating]) -> Result<()> {
     ratings.iter()
         .find(|rating| rating.source == "Rotten Tomatoes")
-        .map(|rating| { rating.value.trim_end_matches("%").parse::<f64>() })
+        .map(|rating| parse_percentage(&rating.value))
         .transpose()
         .map(|r| match r {
             Some(r) if r >= 80.0 => println!("You should watch this movie right now!"),
@@ -57,15 +61,18 @@ async fn fetch_movie_data(title: &str) -> Result<Movie> {
     response
         .json::<Movie>()
         .await
-        .with_context(|| format!("Failed to parse"))
+        .with_context(|| format!("Failed to parse movie data"))
 }
-fn print_movie_info(movie: &Movie) -> Result<()> {
+fn print_movie_info(movie: &Movie){
     println!("Title: {}",        movie.title);
     println!("Year: {}",         movie.year);
     println!("Rating: {}",       movie.rated);
     println!("Running Time: {}", movie.runtime);
     println!("Description: {}",  movie.plot);
-    println!();
+    println!()
+}
+fn display_movie_summary(movie: &Movie) -> Result<()> {
+    print_movie_info(movie);
     print_recommendation(&movie.ratings)
 }
 
@@ -73,7 +80,20 @@ fn print_movie_info(movie: &Movie) -> Result<()> {
 async fn main() -> Result<()> {
     let title = read_title();
     let movie = fetch_movie_data(&title).await?;
-    print_movie_info(&movie)?;
+    display_movie_summary(&movie)?;
 
     Ok(())
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_percentage() {
+        assert_eq!(parse_percentage("80%").unwrap(), 80.0);
+        assert_eq!(parse_percentage("50%").unwrap(), 50.0);
+        assert_eq!(parse_percentage("100%").unwrap(), 100.0);
+        assert_eq!(parse_percentage("0%").unwrap(), 0.0);
+        assert!(parse_percentage("invalid").is_err());
+    }
 }
