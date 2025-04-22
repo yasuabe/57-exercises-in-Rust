@@ -35,6 +35,8 @@ fn main() -> Result<(), eframe::Error> {
 
 struct MyApp {
     tags:       Vec<String>,
+    input_text: String,
+    status_msg: String,
     image_urls: Option<Vec<String>>,
     textures:   Vec<Option<Result<egui::TextureHandle, String>>>,
 }
@@ -43,6 +45,8 @@ impl Default for MyApp {
         let cli_tags: Vec<String> = std::env::args().skip(1).collect();
         Self {
             tags:       cli_tags,
+            input_text: String::new(),
+            status_msg: String::new(),
             image_urls: None,
             textures:   vec![],
         }
@@ -111,6 +115,7 @@ impl MyApp {
             self.image_urls = Some(fetch_image_urls(&self.tags));
             let len         = self.image_urls.as_ref().unwrap().len();
             self.textures   = vec![None; len];
+            self.status_msg = format!("tags={}", self.tags.join(","));
         }
     }
 }
@@ -120,6 +125,27 @@ impl eframe::App for MyApp {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.horizontal_wrapped(|ui| {
                 show_images(ctx, ui, self.image_urls.as_ref().unwrap(), &mut self.textures);
+            });
+        });
+        egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
+            ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                if ui.button("Feed").clicked() {
+                    self.tags = self
+                        .input_text
+                        .split(|c: char| !c.is_alphabetic())
+                        .filter(|s| !s.is_empty())
+                        .map(|s| s.to_string())
+                        .collect();
+                    self.image_urls = None;
+                    self.status_msg = format!("Fetching feed for: {:?}", self.tags);
+                }
+                ui.add(egui::TextEdit::singleline(&mut self.input_text).desired_width(400.0));
+                ui.label("tags: ");
+            });
+        });
+        egui::TopBottomPanel::bottom("status_bar").show(ctx, |ui| {
+            ui.horizontal(|ui| {
+                ui.label(&self.status_msg);
             });
         });
     }
