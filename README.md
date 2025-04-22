@@ -40,6 +40,8 @@ A personal project to get started with Rust by solving the exercises from the bo
 #### Chapter 8: Working with Files
 - Ex41. [Name Sorter](src/bin/main41.rs)
 - Ex43. [Website Generator](src/bin/main43.rs)
+- Ex44: [Product Search](src/bin/main44.rs)
+- Ex45: [Word Finder](src/bin/main45.rs)
 - Ex46. [Word Frequency Finder](src/bin/main46.rs)
 #### Chapter 9: Working with External Services
 - Ex47. [Who’s in Space?](src/bin/main47.rs)
