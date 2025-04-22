@@ -8,7 +8,6 @@
 use eframe::egui;
 use egui::ColorImage;
 use image::DynamicImage;
-
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
@@ -24,32 +23,51 @@ struct FlickrResponse {
     items: Vec<Item>,
 }
 
-fn main() -> Result<(), eframe::Error> {
-    let options = eframe::NativeOptions::default();
-    eframe::run_native(
-        "Image Viewer",
-        options,
-        Box::new(|_cc| Ok(Box::new(MyApp::default()))),
-    )
-}
+fn fetch_feed(tags: &[String]) -> Result<Vec<String>, String> {
+    let tag_string = tags.join(",");
+    let url        = format!( "https://www.flickr.com/services/feeds/photos_public.gne?format=json&tags={}", tag_string);
 
-struct MyApp {
-    tags:       Vec<String>,
-    input_text: String,
-    status_msg: String,
-    image_urls: Option<Vec<String>>,
-    textures:   Vec<Option<Result<egui::TextureHandle, String>>>,
+    let body = reqwest::blocking::get(url)
+        .map_err(|e| e.to_string())?
+        .text()
+        .map_err(|e| e.to_string())?;
+
+    let json = body
+        .strip_prefix("jsonFlickrFeed(")
+        .and_then(|s| s.strip_suffix(")"))
+        .ok_or("invalid JSON wrapper")?;
+
+    let feed: FlickrResponse = serde_json::from_str(json).map_err(|e| e.to_string())?;
+    
+    Ok(feed.items.into_iter().map(|item| item.media.m).collect())
 }
-impl Default for MyApp {
-    fn default() -> Self {
-        let cli_tags: Vec<String> = std::env::args().skip(1).collect();
-        Self {
-            tags:       cli_tags,
-            input_text: String::new(),
-            status_msg: String::new(),
-            image_urls: None,
-            textures:   vec![],
-        }
+fn load_texture(
+    ctx: &egui::Context,
+    url: &str,
+) -> Result<egui::TextureHandle, String> {
+    let bytes = fetch_image_bytes(url).map_err(|e| e.to_string())?;
+    let img   = decode_image(&bytes).map_err(|e| e.to_string())?;
+    let color = to_color_image(&img);
+    Ok(ctx.load_texture(url, color, egui::TextureOptions::default()))
+}
+fn fetch_image_bytes(url: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+    let resp  = reqwest::blocking::get(url)?;
+    let bytes = resp.bytes()?.to_vec();
+    Ok(bytes)
+}
+fn decode_image(bytes: &[u8]) -> Result<DynamicImage, image::ImageError> {
+    image::load_from_memory(bytes)
+}
+fn to_color_image(img: &DynamicImage) -> ColorImage {
+    let rgba   = img.to_rgba8();
+    let (w, h) = rgba.dimensions();
+    let pixels = rgba
+        .pixels()
+        .map(|p| egui::Color32::from_rgba_premultiplied(p[0], p[1], p[2], p[3]))
+        .collect();
+    ColorImage {
+        size: [w as usize, h as usize],
+        pixels,
     }
 }
 fn scaled_size(tex: &egui::TextureHandle) -> egui::Vec2 {
@@ -90,7 +108,7 @@ fn show_image_state(
         None         => show_loading(ui),
     }
 }
-fn show_image_at_index(
+fn draw_image_cell(
     ctx:   &egui::Context,
     ui:    &mut egui::Ui,
     url:   &str,
@@ -99,109 +117,112 @@ fn show_image_at_index(
     load_if_needed(entry, ctx, url);
     show_image_state(ui, entry);
 }
-fn show_images(
+fn render_image_grid(
     ctx:      &egui::Context,
     ui:       &mut egui::Ui,
     urls:     &Vec<String>,
     textures: &mut Vec<Option<Result<egui::TextureHandle, String>>>,
 ) {
     for (i, url) in urls.iter().enumerate() {
-        show_image_at_index(ctx, ui, url, &mut textures[i])
+        draw_image_cell(ctx, ui, url, &mut textures[i])
     }
 }
-impl MyApp {
-    fn ensure_images_loaded(&mut self) {
-        if self.image_urls.is_none() {
-            self.image_urls = Some(fetch_image_urls(&self.tags));
-            let len         = self.image_urls.as_ref().unwrap().len();
-            self.textures   = vec![None; len];
-            self.status_msg = format!("tags={}", self.tags.join(","));
+
+struct MyApp {
+    tags:         Vec<String>,
+    tag_input:    String,
+    status:       String,
+    feed_urls:    Option<Vec<String>>,
+    image_states: Vec<Option<Result<egui::TextureHandle, String>>>,
+}
+impl Default for MyApp {
+    fn default() -> Self {
+        let cli_tags: Vec<String> = std::env::args().skip(1).collect();
+        Self {
+            tags:         cli_tags,
+            tag_input:    String::default(),
+            status:       String::default(),
+            feed_urls:    None,
+            image_states: vec![],
         }
     }
 }
 impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        self.ensure_images_loaded();
-        egui::CentralPanel::default().show(ctx, |ui| {
-            ui.horizontal_wrapped(|ui| {
-                show_images(ctx, ui, self.image_urls.as_ref().unwrap(), &mut self.textures);
-            });
-        });
+        self.load_images_if_needed();
+        self.render_toolbar(ctx);
+        self.render_image_panel(ctx);
+        self.render_status_bar(ctx);
+    }
+}
+impl MyApp {
+    fn fetch_feed_urls(&self) -> Result<Vec<String>, String> {
+        fetch_feed(&self.tags)
+    }
+    fn init_image_states(&mut self, count: usize) {
+        self.image_states = vec![None; count];
+    }
+    fn update_status_after_load(&mut self) {
+        self.status = format!("tags={}", self.tags.join(","));
+    }
+    fn load_images_if_needed(&mut self) {
+        if self.feed_urls.is_none() {
+            match self.fetch_feed_urls() {
+                Ok(urls) => {
+                    self.init_image_states(urls.len());
+                    self.feed_urls = Some(urls);
+                    self.update_status_after_load();
+                }
+                Err(msg) => self.status = format!("Error: {msg}")
+            }
+        }
+    }
+    fn on_feed_button_clicked(&mut self) {
+        self.tags = self
+            .tag_input
+            .split(|c: char| !c.is_alphanumeric())
+            .filter_map(|s| {
+                let trimmed = s.trim();
+                if trimmed.is_empty() { None } else { Some(trimmed.to_string()) }
+            })
+            .collect();
+
+        self.status = format!("Fetching feed for: {:?}", self.tags);
+        self.feed_urls = None;
+    }
+    fn render_toolbar(&mut self, ctx: &egui::Context) {
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                 if ui.button("Feed").clicked() {
-                    self.tags = self
-                        .input_text
-                        .split(|c: char| !c.is_alphabetic())
-                        .filter(|s| !s.is_empty())
-                        .map(|s| s.to_string())
-                        .collect();
-                    self.image_urls = None;
-                    self.status_msg = format!("Fetching feed for: {:?}", self.tags);
+                    self.on_feed_button_clicked();
                 }
-                ui.add(egui::TextEdit::singleline(&mut self.input_text).desired_width(400.0));
+                ui.add(egui::TextEdit::singleline(&mut self.tag_input).desired_width(400.0));
                 ui.label("tags: ");
             });
         });
+    }
+    fn render_image_panel(&mut self, ctx: &egui::Context) {
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.horizontal_wrapped(|ui| {
+                if let Some(urls) = &self.feed_urls.as_ref() {
+                    render_image_grid(ctx, ui, urls, &mut self.image_states);
+                }
+            });
+        });
+    }
+    fn render_status_bar(&self, ctx: &egui::Context) {
         egui::TopBottomPanel::bottom("status_bar").show(ctx, |ui| {
             ui.horizontal(|ui| {
-                ui.label(&self.status_msg);
+                ui.label(&self.status);
             });
         });
     }
 }
-fn fetch_image_urls(tags: &[String]) -> Vec<String> {
-    let tags = if tags.is_empty() { "" } else { &format!("&tags={}", tags.join(",")) };
-    let url = format!(
-        "https://www.flickr.com/services/feeds/photos_public.gne?format=json{}", tags
-    );
-    let text = reqwest::blocking::get(url)
-        .unwrap()
-        .text()
-        .unwrap();
-    let trimmed_json = text.trim_start_matches("jsonFlickrFeed(").trim_end_matches(")");
-    let json         = serde_json::from_str::<FlickrResponse>(trimmed_json)
-        .map_err(|e| format!("Failed to parse JSON: {}", e));
-    match json {
-        Ok(json) => json.items
-            .iter()
-            .map(|item| item.media.m.clone())
-            .collect(),
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            vec![]
-        }
-    }
-}
-fn load_texture(
-    ctx: &egui::Context,
-    url: &str,
-) -> Result<egui::TextureHandle, String> {
-    let bytes = fetch_image_bytes(url).map_err(|e| e.to_string())?;
-    let img   = decode_image(&bytes).map_err(|e| e.to_string())?;
-    let color = to_color_image(&img);
-    Ok(ctx.load_texture(url, color, egui::TextureOptions::default()))
-}
-
-fn fetch_image_bytes(url: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
-    let resp  = reqwest::blocking::get(url)?;
-    let bytes = resp.bytes()?.to_vec();
-    Ok(bytes)
-}
-
-fn decode_image(bytes: &[u8]) -> Result<DynamicImage, image::ImageError> {
-    image::load_from_memory(bytes)
-}
-
-fn to_color_image(img: &DynamicImage) -> ColorImage {
-    let rgba   = img.to_rgba8();
-    let (w, h) = rgba.dimensions();
-    let pixels = rgba
-        .pixels()
-        .map(|p| egui::Color32::from_rgba_premultiplied(p[0], p[1], p[2], p[3]))
-        .collect();
-    ColorImage {
-        size: [w as usize, h as usize],
-        pixels,
-    }
+fn main() -> Result<(), eframe::Error> {
+    let options = eframe::NativeOptions::default();
+    eframe::run_native(
+        "Image Viewer",
+        options,
+        Box::new(|_cc| Ok(Box::new(MyApp::default()))),
+    )
 }

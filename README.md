@@ -44,6 +44,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 #### Chapter 9: Working with External Services
 - Ex47. [Who’s in Space?](src/bin/main47.rs)
 - Ex48. [Grabbing the Weather](src/bin/main48.rs)
+- Ex49. [Flickr Photo Search](src/bin/main49.rs)
 - Ex50. [Movie Recommendations](src/bin/main50.rs)
 - Ex51: [Pushing Notes to Firebase](src/bin/main51.rs)
 - Ex52. [Creating Your Own Time Service](src/bin/main52.rs)
