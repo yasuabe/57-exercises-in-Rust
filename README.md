@@ -24,6 +24,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex15. [Password Validation](src/bin/main15.rs)
 - Ex16. [Legal Driving Age](src/bin/main16.rs)
 - Ex17. [Blood Alcohol Calculator](src/bin/main17.rs)
+- Ex18. [Temperature Converter](src/bin/main18.rs)
 - Ex20. [Multistate Sales Tax Calculator](src/bin/main20.rs)
 - Ex23. [Troubleshooting Car Issues](src/bin/main23.rs)
 #### Chapter 5: Functions
