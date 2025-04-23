@@ -48,7 +48,7 @@ fn main() {
 
     println!("The temperature in {} is {:.1}°", to_unit, converted);
 }
-// #[cfg(test)]
+#[cfg(test)]
 mod tests {
     use super::*;
     const EPSILON: f64 = 0.1;
