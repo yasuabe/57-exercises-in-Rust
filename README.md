@@ -37,6 +37,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex27. [Validating Inputs](src/bin/main27.rs)
 #### Chapter 6: Repetition
 - Ex28. [Adding Numbers](src/bin/main28.rs)
+- Ex29: [Handling Bad Input](src/bin/main29.rs)
 - Ex30. [Multiplication Table](src/bin/main30.rs)
 - Ex32. [Guess the Number Game](src/bin/main32.rs)
 #### Chapter 7: Data Structures
@@ -122,6 +123,7 @@ $ docker run --name mongodb-local -d -p 27017:27017 mongo
 4. The `data/ex56_inventory.json` file will update with each addition.
 
 ## Notes
+- This is a personal practice project, so I’m intentionally going a bit overboard with some implementations or keeping things minimal in others, with a feel that’s a little different from production code.
 - I relied on Vibe Coding just a little bit.
 
 ## References
