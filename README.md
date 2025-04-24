@@ -28,10 +28,12 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex19. [BMI Calculator](src/bin/main19.rs)
 - Ex20. [Multistate Sales Tax Calculator](src/bin/main20.rs)
 - Ex21. [Numbers to Names](src/bin/main21.rs)
+- Ex22. [Comparing Numbers](src/bin/main22.rs)
 - Ex23. [Troubleshooting Car Issues](src/bin/main23.rs)
 #### Chapter 5: Functions
 - Ex24. [Anagram Checker](src/bin/main24.rs)
 - Ex25. [Password Strength Indicator](src/bin/main25.rs)
+- Ex26. [Months to Pay Off a Credit Card](src/bin/main26.rs)
 - Ex27. [Validating Inputs](src/bin/main27.rs)
 #### Chapter 6: Repetition
 - Ex28. [Adding Numbers](src/bin/main28.rs)
