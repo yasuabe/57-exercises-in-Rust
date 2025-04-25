@@ -45,6 +45,7 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex33: [Magic 8 Ball](src/bin/main33.rs)
 - Ex34: [Employee List Removal](src/bin/main34.rs)
 - Ex35: [Picking a Winner](src/bin/main35.rs)
+- Ex36: [Computing Statistics](src/bin/main36.rs)
 - Ex37: [Password Generator](src/bin/main37.rs)
 - Ex39: [Sorting Records](src/bin/main39.rs)
 - Ex40: [Filtering Records](src/bin/main40.rs)
