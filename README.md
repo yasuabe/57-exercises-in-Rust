@@ -47,10 +47,12 @@ A personal project to get started with Rust by solving the exercises from the bo
 - Ex35: [Picking a Winner](src/bin/main35.rs)
 - Ex36: [Computing Statistics](src/bin/main36.rs)
 - Ex37: [Password Generator](src/bin/main37.rs)
+- Ex38: [Filtering Values](src/bin/main39.rs)
 - Ex39: [Sorting Records](src/bin/main39.rs)
 - Ex40: [Filtering Records](src/bin/main40.rs)
 #### Chapter 8: Working with Files
 - Ex41: [Name Sorter](src/bin/main41.rs)
+- Ex42: [Parsing a Data File](src/bin/main42.rs)
 - Ex43: [Website Generator](src/bin/main43.rs)
 - Ex44: [Product Search](src/bin/main44.rs)
 - Ex45: [Word Finder](src/bin/main45.rs)
