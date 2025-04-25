@@ -8,19 +8,18 @@
 - Calculate and display the retirement year and remaining years.
 */
 use chrono::Datelike;
-use exercises_for_programmer::utils::std_util::read_int;
+use exercises_for_programmer::utils::{std_util::read_int, string_util::StripMargin};
 
 fn mk_outputs(current: i32, retire: i32) -> String {
     let remain    = retire - current;
     let this_year = chrono::Local::now().year();
 
-    // TODO: use stdx::trim_indent()
     format!(
-r#"You have {} years left until you can retire.
-It's {}, so you can retire in {}."#,
+        r#" |You have {} years left until you can retire.
+            |It's {}, so you can retire in {}."#,
         remain,
         this_year,
-        this_year + remain)
+        this_year + remain).strip_margin()
 }
 fn main() {
     let current_age = read_int("What is your current age? ");

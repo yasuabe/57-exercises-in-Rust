@@ -8,7 +8,7 @@
 - Round all money up to the nearest cent.
 - Use a single output statement at the end.
 */
-use exercises_for_programmer::utils::std_util::{read_int, read_input};
+use exercises_for_programmer::utils::{std_util::{read_input, read_int}, string_util::StripMargin};
 
 struct Input { amount: i32, state: String }
 
@@ -28,21 +28,21 @@ fn read() -> Input {
     }
 }
 fn print_output(input: Input) {
-    if input.has_tax_rate() {
-        // TODO: use stdx::trim_indent()
-        println!(r#"
-The subtotal is ${:.2}.
-The tax is ${:.2}.
-The total is ${:.2}."#,
+    let output = if input.has_tax_rate() {
+        format!(
+            r#" |The subtotal is ${:.2}.
+                |The tax is ${:.2}.
+                |The total is ${:.2}."#,
             input.subtotal(),
             input.tax(),
+            input.total()
+        ).strip_margin()
+    } else {
+        format!(
+            r#"The total is ${:.2}."#,
             input.total())
-    }
-    if !input.has_tax_rate() {
-        println!(r#"
-The total is ${:.2}."#,
-            input.total())
-    }
+    };
+    println!("{}", output)
 }
 fn main() {
     let input  = read();

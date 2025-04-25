@@ -8,6 +8,7 @@
 - Output the distribution results clearly.
 */
 use exercises_for_programmer::utils::std_util::read_int;
+use exercises_for_programmer::utils::string_util::StripMargin;
 
 struct Input { people: i32, pizzas: i32, slices: i32 }
 struct Result { people: i32, pizzas: i32, slices: i32, leftover: i32 }
@@ -29,16 +30,16 @@ fn calc(input: Input) -> Result {
     }
 }
 fn print_output(result: Result) {
-    // TODO: use stdx::trim_indent()
-    println!(
-r#"{} people with {} pizzas
-Each person gets {} pieces of pizza.
-There are {} leftover pieces."#,
+    let output = format!(
+        r#"|{} people with {} pizzas
+           |Each person gets {} pieces of pizza.
+           |There are {} leftover pieces."#,
         result.people,
         result.pizzas,
         result.slices,
         result.leftover
-    )
+    ).strip_margin();
+    println!("{}", output)
 }
 fn main() {
     let input  = read();
