@@ -1,5 +1,5 @@
 /*
-## Ex47: Grabbing the Weather
+## Ex48: Grabbing the Weather
 
 - Prompt the user for a city name.
 - Use OpenWeatherMap API to fetch current weather.

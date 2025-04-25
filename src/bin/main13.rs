@@ -1,4 +1,12 @@
-
+/* ----------------
+# Ex13: Determining Compound Interest
+----------------
+- Prompt the user for principal amount, interest rate (as a percentage), number of years, and compounding frequency per year.
+- Convert the interest rate by dividing it by 100.
+- Use the compound interest formula to compute the final amount.
+- Round up fractions of a cent to the next penny.
+- Format the output as money.
+*/
 use exercises_for_programmer::utils::std_util::{read_int, read_float};
 
 struct Input { principal: i32, rate: f32, years: i32, times: i32 }
@@ -20,6 +28,7 @@ fn read() -> Input {
 }
 fn print_output(result: Input) {
     let interest = result.interest();
+    // TODO: use stdx::trim_indent()    
     println!(
 r#"${} invested at {}% for {} years
 compounded {} times per year is ${:.2}."#, 

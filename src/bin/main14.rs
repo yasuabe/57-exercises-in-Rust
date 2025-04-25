@@ -1,3 +1,13 @@
+/* ----------------
+# Ex14: Tax Calculator
+----------------
+- Prompt the user for the order amount and the state.
+- If the state is "WI", calculate 5.5% tax and display subtotal, tax, and total.
+- For other states, display only the total.
+- Use only a simple if statement (no else clause).
+- Round all money up to the nearest cent.
+- Use a single output statement at the end.
+*/
 use exercises_for_programmer::utils::std_util::{read_int, read_input};
 
 struct Input { amount: i32, state: String }
@@ -19,6 +29,7 @@ fn read() -> Input {
 }
 fn print_output(input: Input) {
     if input.has_tax_rate() {
+        // TODO: use stdx::trim_indent()
         println!(r#"
 The subtotal is ${:.2}.
 The tax is ${:.2}.

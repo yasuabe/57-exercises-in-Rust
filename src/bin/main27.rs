@@ -1,3 +1,15 @@
+/* ----------------
+# Ex27: Validating Inputs
+----------------
+- Prompt the user for first name, last name, ZIP code, and employee ID.
+- Validate each input:
+  - First and last names must not be empty and must be at least two characters long.
+  - ZIP code must be numeric.
+  - Employee ID must match the format AA-1234.
+- Create a separate function for each validation.
+- Create a validateInput function to coordinate all validations.
+- Use a single output statement to display all error messages or success.
+*/
 use exercises_for_programmer::utils::std_util::read_input;
 use regex::Regex;
 use once_cell::sync::Lazy;
@@ -8,7 +20,7 @@ struct Input {
     zip_code:    String,
     employee_id: String,
 }
-type Validation   = Box<dyn Fn(&Input) -> Option<String>>;
+type Validation = Box<dyn Fn(&Input) -> Option<String>>;
 
 static ZIP_RE: Lazy<Regex>         = Lazy::new(|| Regex::new(r"^\d*$").unwrap());
 static EMPLOYEE_ID_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[A-Z]{2}-\d{4}$").unwrap());
@@ -73,21 +85,21 @@ fn read() -> Input {
 }
 
 fn main() {
-  let input = read();
-  let validators: Vec<Validation> = vec![
-      compose("first name",  get_first_name,  validate_non_empty    , build_non_empty_error),
-      compose("first name",  get_first_name,  validate_min_length(2), build_min_length_error),
-      compose("second name", get_second_name, validate_non_empty,     build_non_empty_error),
-      compose("second name", get_second_name, validate_min_length(2), build_min_length_error),
-      compose("zip code",    get_zip_code,    validate_zip_code,      build_zip_code_error),
-      compose("employee ID", get_employee_id, validate_employee_id,   build_employee_id_error),
-  ];
-  let messages: Vec<String> = validators.iter().filter_map(|f| f(&input)).collect();
-  if messages.is_empty() {
-    println!("There were no errors found.")
-  } else {
-    for msg in &messages {
-      println!("{}", msg)
-    }
-  } 
+    let input = read();
+    let validators: Vec<Validation> = vec![
+        compose("first name",  get_first_name,  validate_non_empty    , build_non_empty_error),
+        compose("first name",  get_first_name,  validate_min_length(2), build_min_length_error),
+        compose("second name", get_second_name, validate_non_empty,     build_non_empty_error),
+        compose("second name", get_second_name, validate_min_length(2), build_min_length_error),
+        compose("zip code",    get_zip_code,    validate_zip_code,      build_zip_code_error),
+        compose("employee ID", get_employee_id, validate_employee_id,   build_employee_id_error),
+    ];
+    let messages: Vec<String> = validators.iter().filter_map(|f| f(&input)).collect();
+    if messages.is_empty() {
+        println!("There were no errors found.")
+    } else {
+        for msg in &messages {
+            println!("{}", msg)
+        }
+    } 
 }

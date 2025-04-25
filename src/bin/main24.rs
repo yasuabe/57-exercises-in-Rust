@@ -1,3 +1,12 @@
+/* ----------------
+# Ex24: Anagram Checker
+-------------------
+- Prompt the user to enter two strings.
+- Check if the strings are anagrams.
+- Use a function called isAnagram that takes two strings and returns true or false.
+- Ensure both strings are the same length before checking further.
+- Display whether the two strings are anagrams.
+*/
 use exercises_for_programmer::utils::std_util::read_input;
 
 struct Input { first: String, second: String }

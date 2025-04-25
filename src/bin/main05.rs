@@ -1,10 +1,15 @@
-use exercises_for_programmer::utils::std_util::read_input;
-use exercises_for_programmer::utils::conversion_util::to_int;
+/* ----------------
+# Ex5: Simple Math
+----------------
+- Prompt the user to enter two numbers.
+- Convert the input strings to numeric types before performing calculations.
+- Calculate the sum, difference, product, and quotient.
+- Keep input and output separate from processing logic.
+- Use a single output statement with line breaks to display the results.
+*/
+use exercises_for_programmer::utils::std_util::read_int;
 
-fn read_number(s: &str) -> i32 {
-    to_int(read_input(s))
-}
-fn mk_outputs(x: i32, y: i32) -> String {
+fn make_outputs(x: i32, y: i32) -> String {
     let operations: [(fn(i32, i32) -> i32, &str); 4] = [
         (|a, b| a + b, "+"),
         (|a, b| a - b, "-"),
@@ -16,10 +21,10 @@ fn mk_outputs(x: i32, y: i32) -> String {
         .join("\n")
 }
 fn main() {
-    let first  = read_number("What is the first number? ");
-    let second = read_number("What is the second number? ");
+    let first  = read_int("What is the first number? ");
+    let second = read_int("What is the second number? ");
 
-    let results = mk_outputs(first, second);
+    let results = make_outputs(first, second);
 
     println!("{}", results)
 }

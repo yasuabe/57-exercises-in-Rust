@@ -1,3 +1,12 @@
+/* ----------------
+# Ex8: Pizza Party
+-------------------
+- Prompt the user for the number of people, pizzas, and slices per pizza.
+- Calculate the total number of slices.
+- Determine how many slices each person gets evenly.
+- Calculate and display any leftover slices.
+- Output the distribution results clearly.
+*/
 use exercises_for_programmer::utils::std_util::read_int;
 
 struct Input { people: i32, pizzas: i32, slices: i32 }
@@ -20,6 +29,7 @@ fn calc(input: Input) -> Result {
     }
 }
 fn print_output(result: Result) {
+    // TODO: use stdx::trim_indent()
     println!(
 r#"{} people with {} pizzas
 Each person gets {} pieces of pizza.

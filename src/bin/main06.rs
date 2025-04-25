@@ -1,14 +1,20 @@
+/* ----------------
+# Ex6: Retirement Calculator
+----------------
+- Prompt the user to enter their current age and desired retirement age.
+- Convert input to numeric values before performing calculations.
+- Determine how many years are left until retirement.
+- Get the current year from the system, not hard-coded.
+- Calculate and display the retirement year and remaining years.
+*/
 use chrono::Datelike;
-use exercises_for_programmer::utils::std_util::read_input;
-use exercises_for_programmer::utils::conversion_util::to_int;
+use exercises_for_programmer::utils::std_util::read_int;
 
-fn read_age(s: &str) -> i32 {
-    to_int(read_input(s))
-}
 fn mk_outputs(current: i32, retire: i32) -> String {
     let remain    = retire - current;
     let this_year = chrono::Local::now().year();
 
+    // TODO: use stdx::trim_indent()
     format!(
 r#"You have {} years left until you can retire.
 It's {}, so you can retire in {}."#,
@@ -17,8 +23,8 @@ It's {}, so you can retire in {}."#,
         this_year + remain)
 }
 fn main() {
-    let current_age = read_age("What is your current age? ");
-    let retire_age  = read_age("At what age would you like to retire? ");
+    let current_age = read_int("What is your current age? ");
+    let retire_age  = read_int("At what age would you like to retire? ");
 
     let results = mk_outputs(current_age, retire_age);
  	

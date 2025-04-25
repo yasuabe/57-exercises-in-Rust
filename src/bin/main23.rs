@@ -1,3 +1,11 @@
+/* ----------------
+# Ex23: Troubleshooting Car Issues
+----------------
+- Guide the user through a series of yes/no questions based on a decision tree.
+- Ask only relevant questions based on previous answers.
+- Display appropriate troubleshooting advice depending on the answers.
+- Do not prompt for all inputs at once; follow the flow of the decision tree.
+*/
 use exercises_for_programmer::utils::std_util::read_input;
 use once_cell::sync::Lazy;
 
