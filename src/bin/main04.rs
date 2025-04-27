@@ -1,6 +1,6 @@
 /* ----------------
 # Ex4: Mad Lib
-----------------
+-------------------
 - Prompt the user to enter a noun, a verb, an adjective, and an adverb.
 - Create a story using the inputs.
 - Use string interpolation or substitution to build the output.
