@@ -5,71 +5,71 @@ A personal project to get started with Rust by solving the exercises from the bo
 
 ### Solved Exercises
 #### Chapter 2: Input, Processing, and Output
-- Ex01: [Saying Hello](src/bin/main01.rs)
-- Ex02: [Counting the Number of Characters](src/bin/main02.rs)
-- Ex03: [Printing Quotes](src/bin/main03.rs)
-- Ex04: [Mad Lib](src/bin/main04.rs)
-- Ex05: [Simple Math](src/bin/main05.rs)
-- Ex06: [Retirement Calculator](src/bin/main06.rs)
+- Ex01: [Saying Hello](src/ex01/main.rs)
+- Ex02: [Counting the Number of Characters](src/ex02/main.rs)
+- Ex03: [Printing Quotes](src/ex03/main.rs)
+- Ex04: [Mad Lib](src/ex04/main.rs)
+- Ex05: [Simple Math](src/ex05/main.rs)
+- Ex06: [Retirement Calculator](src/ex06/main.rs)
 #### Chapter 3: Calculations
-- Ex07: [Area of a Rectangular Room](src/bin/main07.rs)
-- Ex08: [Pizza Party](src/bin/main08.rs)
-- Ex09: [Paint Calculator](src/bin/main09.rs)
-- Ex10: [Self-Checkout](src/bin/main10.rs)
-- Ex11: [Currency Conversion](src/bin/main11.rs)
-- Ex12: [Computing Simple Interest](src/bin/main12.rs)
-- Ex13: [Determining Compound Interest](src/bin/main13.rs)
+- Ex07: [Area of a Rectangular Room](src/ex07/main.rs)
+- Ex08: [Pizza Party](src/ex08/main.rs)
+- Ex09: [Paint Calculator](src/ex09/main.rs)
+- Ex10: [Self-Checkout](src/ex10/main.rs)
+- Ex11: [Currency Conversion](src/ex11/main.rs)
+- Ex12: [Computing Simple Interest](src/ex12/main.rs)
+- Ex13: [Determining Compound Interest](src/ex13/main.rs)
 #### Chapter 4: Making Decisions
-- Ex14: [Tax Calculator](src/bin/main14.rs)
-- Ex15: [Password Validation](src/bin/main15.rs)
-- Ex16: [Legal Driving Age](src/bin/main16.rs)
-- Ex17: [Blood Alcohol Calculator](src/bin/main17.rs)
-- Ex18: [Temperature Converter](src/bin/main18.rs)
-- Ex19: [BMI Calculator](src/bin/main19.rs)
-- Ex20: [Multistate Sales Tax Calculator](src/bin/main20.rs)
-- Ex21: [Numbers to Names](src/bin/main21.rs)
-- Ex22: [Comparing Numbers](src/bin/main22.rs)
-- Ex23: [Troubleshooting Car Issues](src/bin/main23.rs)
+- Ex14: [Tax Calculator](src/ex14/main.rs)
+- Ex15: [Password Validation](src/ex15/main.rs)
+- Ex16: [Legal Driving Age](src/ex16/main.rs)
+- Ex17: [Blood Alcohol Calculator](src/ex17/main.rs)
+- Ex18: [Temperature Converter](src/ex18/main.rs)
+- Ex19: [BMI Calculator](src/ex19/main.rs)
+- Ex20: [Multistate Sales Tax Calculator](src/ex20/main.rs)
+- Ex21: [Numbers to Names](src/ex21/main.rs)
+- Ex22: [Comparing Numbers](src/ex22/main.rs)
+- Ex23: [Troubleshooting Car Issues](src/ex23/main.rs)
 #### Chapter 5: Functions
-- Ex24: [Anagram Checker](src/bin/main24.rs)
-- Ex25: [Password Strength Indicator](src/bin/main25.rs)
-- Ex26: [Months to Pay Off a Credit Card](src/bin/main26.rs)
-- Ex27: [Validating Inputs](src/bin/main27.rs)
+- Ex24: [Anagram Checker](src/ex24/main.rs)
+- Ex25: [Password Strength Indicator](src/ex25/main.rs)
+- Ex26: [Months to Pay Off a Credit Card](src/ex26/main.rs)
+- Ex27: [Validating Inputs](src/ex27/main.rs)
 #### Chapter 6: Repetition
-- Ex28: [Adding Numbers](src/bin/main28.rs)
-- Ex29: [Handling Bad Input](src/bin/main29.rs)
-- Ex30: [Multiplication Table](src/bin/main30.rs)
-- Ex31: [Karvonen Heart Rate](src/bin/main31.rs)
-- Ex32: [Guess the Number Game](src/bin/main32.rs)
+- Ex28: [Adding Numbers](src/ex28/main.rs)
+- Ex29: [Handling Bad Input](src/ex29/main.rs)
+- Ex30: [Multiplication Table](src/ex30/main.rs)
+- Ex31: [Karvonen Heart Rate](src/ex31/main.rs)
+- Ex32: [Guess the Number Game](src/ex32/main.rs)
 #### Chapter 7: Data Structures
-- Ex33: [Magic 8 Ball](src/bin/main33.rs)
-- Ex34: [Employee List Removal](src/bin/main34.rs)
-- Ex35: [Picking a Winner](src/bin/main35.rs)
-- Ex36: [Computing Statistics](src/bin/main36.rs)
-- Ex37: [Password Generator](src/bin/main37.rs)
-- Ex38: [Filtering Values](src/bin/main39.rs)
-- Ex39: [Sorting Records](src/bin/main39.rs)
-- Ex40: [Filtering Records](src/bin/main40.rs)
+- Ex33: [Magic 8 Ball](src/ex33/main.rs)
+- Ex34: [Employee List Removal](src/ex34/main.rs)
+- Ex35: [Picking a Winner](src/ex35/main.rs)
+- Ex36: [Computing Statistics](src/ex36/main.rs)
+- Ex37: [Password Generator](src/ex37/main.rs)
+- Ex38: [Filtering Values](src/ex39/main.rs)
+- Ex39: [Sorting Records](src/ex39/main.rs)
+- Ex40: [Filtering Records](src/ex40/main.rs)
 #### Chapter 8: Working with Files
-- Ex41: [Name Sorter](src/bin/main41.rs)
-- Ex42: [Parsing a Data File](src/bin/main42.rs)
-- Ex43: [Website Generator](src/bin/main43.rs)
-- Ex44: [Product Search](src/bin/main44.rs)
-- Ex45: [Word Finder](src/bin/main45.rs)
-- Ex46: [Word Frequency Finder](src/bin/main46.rs)
+- Ex41: [Name Sorter](src/ex41/main.rs)
+- Ex42: [Parsing a Data File](src/ex42/main.rs)
+- Ex43: [Website Generator](src/ex43/main.rs)
+- Ex44: [Product Search](src/ex44/main.rs)
+- Ex45: [Word Finder](src/ex45/main.rs)
+- Ex46: [Word Frequency Finder](src/ex46/main.rs)
 #### Chapter 9: Working with External Services
-- Ex47: [Who’s in Space?](src/bin/main47.rs)
-- Ex48: [Grabbing the Weather](src/bin/main48.rs)
-- Ex49: [Flickr Photo Search](src/bin/main49.rs)
-- Ex50: [Movie Recommendations](src/bin/main50.rs)
-- Ex51: [Pushing Notes to Firebase](src/bin/main51.rs)
-- Ex52: [Creating Your Own Time Service](src/bin/main52.rs)
+- Ex47: [Who’s in Space?](src/ex47/main.rs)
+- Ex48: [Grabex W/maineather](src/bin/main48.rs)
+- Ex49: [Flickr Photo Search](src/ex49/main.rs)
+- Ex50: [Movie Recommendations](src/ex50/main.rs)
+- Ex51: [Pushing Notes to Firebase](src/ex51/main.rs)
+- Ex52: [Creating Your Own Time Service](src/ex52/main.rs)
 #### Chapter 10: Full Programs
-- Ex53: [Todo List](src/bin/main53.rs)
-- Ex54: [URL Shortener](src/bin/main54.rs)
-- Ex55: [Text Sharing](src/bin/main55.rs)
-- Ex56: [Tracking Inventory](src/bin/main56.rs)
-- Ex57: [Trivia App](src/bin/main57.rs)
+- Ex53: [Todo List](src/ex53/main.rs)
+- Ex54: [URL Shortener](src/ex54/main.rs)
+- Ex55: [Text Sharing](src/ex55/main.rs)
+- Ex56: [Tracking Inventory](src/ex56/main.rs)
+- Ex57: [Trivia App](src/ex57/main.rs)
 
 ## Technologies Used
 
@@ -81,51 +81,6 @@ Run the following directly under the project.
 ```
 $ cargo run --bin main[nn]
 ```
-### Ex45: Word Finder
-`cargo run --bin main45 -- -o [output file name]`
-
-### Ex48: Grabbing the Weather
-- Register with OpenWeather and obtain an API key (no subscription required).
-- Copy config template: `cp config/ex48_config.json.template config/ex48_config.json`
-- Replace placeholders in config/ex51_config.json with API key
-### Ex50: 50	Movie Recommendations
-- PREREQUISITE: Register with OMDb and obtain an API key.
-- `$ export API_KEY=<your api key>`
-
-### Ex51: Pushing Notes to Firebase
-#### Prerequisites
-- A configured Firebase project
-  - Ability to obtain an ID token as an Email/Password user
-  - Access via a REST client (e.g., `curl`, Postman) using the ID token
-#### Setup
-  - Copy the template: `cp config/ex51_config.json.template config/ex51_config.json`
-  - Replace placeholders in config/ex51_config.json with actual values.
-#### Caution
-The ID token is stored in output/id_token.txt. Keep it secure.
-
-### Ex52: Creating Your Own Time Service
-1. Run `cargo run --bin main52`.
-2. From another terminal, run cargo run --bin main52_client.
-
-### Ex53: Todo List
-Start Redis in your local environment with the command below, then run cargo run --bin main53:
-```
-$ docker run --name redis-local -d -p 6379:6379 redis
-```
-### Ex55: Text Sharing
-1. Prepare MongoDB
-```
-$ docker pull mongo
-$ docker run --name mongodb-local -d -p 27017:27017 mongo
-```
-2. Run `cargo run --bin main55`
-3. Open ``http://127.0.0.1:8080/ex55` in your browser.
-
-### Ex56: Tracking Inventory
-1. Run `cargo run --bin main56`.
-2. Open `http://127.0.0.1:8080/ex56` in your browser.
-3. Add inventory items.
-4. The `data/ex56_inventory.json` file will update with each addition.
 
 ## Notes
 - This is a personal practice project, so I’m intentionally going a bit overboard with some implementations or keeping things minimal in others, with a feel that’s a little different from production code.

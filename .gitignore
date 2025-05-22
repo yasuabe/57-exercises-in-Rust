@@ -2,3 +2,5 @@
 /output
 /config/*.json
 /proptest-regressions
+src/ex*/output/*
+src/ex*/config.json
