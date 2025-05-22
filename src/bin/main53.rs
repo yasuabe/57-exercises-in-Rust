@@ -1,9 +1,10 @@
-/*
-## Ex53: Todo List
+/* ---------------
+# Ex53: Todo List
+------------------
 - Command-line todo list app.
 - Store data in Redis.
 
-### Commands:
+## Commands:
 - add: <task>  – Add a new task (empty tasks are not allowed)
 - list         – Show all tasks
 - remove: <id> – Remove completed task by ID
@@ -64,12 +65,12 @@ fn connect_to_redis() -> redis::RedisResult<redis::Connection> {
 fn run_prompt_loop(con: &mut redis::Connection) -> redis::RedisResult<()> {
     loop {
         match parse_input(&read_input("> ")) {
-            Command::NoInput        => continue,
-            Command::Add(task)    => add_task(con, &task)?,
-            Command::List         => list_tasks(con)?,
-            Command::Remove(id)   => remove_task(con, id)?,
+            Command::NoInput    => continue,
+            Command::Add(task)  => add_task(con, &task)?,
+            Command::List       => list_tasks(con)?,
+            Command::Remove(id) => remove_task(con, id)?,
             Command::Error(msg) => println!("{}", msg),
-            Command::Exit         => break,
+            Command::Exit       => break,
         }
     }
     Ok(())
