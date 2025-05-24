@@ -32,3 +32,17 @@ pub fn read_float(prompt: &str) -> f32 {
 pub fn read_f64(prompt: &str) -> f64 {
     read_parsed(prompt, "Please enter a valid f64 number.")
 }
+
+pub fn read_valid_input<T, E, F, G>( prompt: &str, converter: F, mk_err_msg: G) -> T
+where
+    F: Fn(&str)     -> Result<T, E>,
+    G: Fn(&str, &E) -> String,
+{
+    loop {
+        let input = read_input(prompt);
+        match converter(&input) {
+            Ok(value) => return value,
+            Err(err)  => println!("{}", mk_err_msg(&input, &err)),
+        }
+    }
+}

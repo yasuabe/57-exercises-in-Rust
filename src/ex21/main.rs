@@ -7,37 +7,42 @@
 - Use a switch or case statement.
 - Use a single output statement.
 ------------------------------------------------*/
-use exercises_for_programmer::utils::std_util::read_input;
+use exercises_for_programmer::utils::std_util::read_valid_input;
+use thiserror::Error;
 
-fn month_number_to_name(number: &str) -> Result<&'static str, &'static str> {
-    match number.trim().parse::<u32>() {
-        Ok(1)  => Ok("January"),
-        Ok(2)  => Ok("February"),
-        Ok(3)  => Ok("March"),
-        Ok(4)  => Ok("April"),
-        Ok(5)  => Ok("May"),
-        Ok(6)  => Ok("June"),
-        Ok(7)  => Ok("July"),
-        Ok(8)  => Ok("August"),
-        Ok(9)  => Ok("September"),
-        Ok(10) => Ok("October"),
-        Ok(11) => Ok("November"),
-        Ok(12) => Ok("December"),
-        _      => Err("Invalid input. Please enter a number between 1 and 12.")
+#[derive(Error, Debug)]
+pub enum MonthError {
+    #[error("Invalid input: Enter a number")]
+    Parse(#[from] std::num::ParseIntError),
+
+    #[error("Invalid input: Enter a number between 1 and 12.")]
+    OutOfRange,
+}
+
+fn month_number_to_name(number: &str) -> Result<&'static str, MonthError> {
+    match number.trim().parse::<u32>()? {
+        1  => Ok("January"),
+        2  => Ok("February"),
+        3  => Ok("March"),
+        4  => Ok("April"),
+        5  => Ok("May"),
+        6  => Ok("June"),
+        7  => Ok("July"),
+        8  => Ok("August"),
+        9  => Ok("September"),
+        10 => Ok("October"),
+        11 => Ok("November"),
+        12 => Ok("December"),
+        _  => Err(MonthError::OutOfRange),
     }
 }
+
 fn get_month_name() -> &'static str {
-    loop {
-        let input = read_input("Please enter the number of the month: ");
-        match month_number_to_name(&input) {
-            Ok(name) => {
-                return name;
-            }
-            Err(err) => {
-                println!("{}", err);
-            }
-        }
-    }
+    read_valid_input(
+        "Please enter the number of the month: ",
+        month_number_to_name,
+        |input, err| format!("Invalid input: '{}': {}.", input, err),
+    )
 }
 fn main() {
     let month_name = get_month_name();
@@ -49,18 +54,18 @@ mod tests {
 
     #[test]
     fn test_month_number_to_name() {
-        assert_eq!(month_number_to_name("1"),  Ok("January"));
-        assert_eq!(month_number_to_name("2"),  Ok("February"));
-        assert_eq!(month_number_to_name("3"),  Ok("March"));
-        assert_eq!(month_number_to_name("4"),  Ok("April"));
-        assert_eq!(month_number_to_name("5"),  Ok("May"));
-        assert_eq!(month_number_to_name("6"),  Ok("June"));
-        assert_eq!(month_number_to_name("7"),  Ok("July"));
-        assert_eq!(month_number_to_name("8"),  Ok("August"));
-        assert_eq!(month_number_to_name("9"),  Ok("September"));
-        assert_eq!(month_number_to_name("10"), Ok("October"));
-        assert_eq!(month_number_to_name("11"), Ok("November"));
-        assert_eq!(month_number_to_name("12"), Ok("December"));
+        assert_eq!(month_number_to_name("1").unwrap(),  "January");
+        assert_eq!(month_number_to_name("2").unwrap(),  "February");
+        assert_eq!(month_number_to_name("3").unwrap(),  "March");
+        assert_eq!(month_number_to_name("4").unwrap(),  "April");
+        assert_eq!(month_number_to_name("5").unwrap(),  "May");
+        assert_eq!(month_number_to_name("6").unwrap(),  "June");
+        assert_eq!(month_number_to_name("7").unwrap(),  "July");
+        assert_eq!(month_number_to_name("8").unwrap(),  "August");
+        assert_eq!(month_number_to_name("9").unwrap(),  "September");
+        assert_eq!(month_number_to_name("10").unwrap(), "October");
+        assert_eq!(month_number_to_name("11").unwrap(), "November");
+        assert_eq!(month_number_to_name("12").unwrap(), "December");
         assert!(month_number_to_name(" 1").is_ok());
         assert!(month_number_to_name("1 ").is_ok());
         assert!(month_number_to_name("01").is_ok());
