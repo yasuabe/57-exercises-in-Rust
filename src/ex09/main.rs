@@ -42,7 +42,7 @@ mod tests {
     }
     #[test]
     fn test_gallons_needed() {
-        //                    length| width |
+        //                    area  | expected
         assert_gallons_needed(     0,     0);
         assert_gallons_needed(     1,     1);
         assert_gallons_needed(   350,     1);
